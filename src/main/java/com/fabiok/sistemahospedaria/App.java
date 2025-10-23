@@ -1,4 +1,4 @@
-package com.fabiok.sistema-hospedaria;
+package com.fabiok.sistemahospedaria;
 
 /**
  * Hello world!
