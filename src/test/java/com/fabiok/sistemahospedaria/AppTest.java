@@ -1,4 +1,4 @@
-package com.fabiok.sistema-hospedaria;
+package com.fabiok.sistemahospedaria;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

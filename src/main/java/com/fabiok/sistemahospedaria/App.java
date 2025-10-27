@@ -1,10 +1,14 @@
 package com.fabiok.sistemahospedaria;
 
+import java.math.BigDecimal;
+
 /**
  * Hello world!
  */
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        Quarto quarto = new Quarto("123", 2, 2, BigDecimal.valueOf(100), "ATIVO", "SINGLE");
+		QuartoIdao quartoIdao = new QuartoIdao();
+		quartoIdao.save(quarto);
     }
 }
