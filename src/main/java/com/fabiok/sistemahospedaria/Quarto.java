@@ -24,6 +24,13 @@ public class Quarto {
 		return (capAdultoDisponivel + capacidadeCriancas) >= qtdCriancas;
 	}
 
+	public void definirCapacidadeAdultos(Integer capacidadeAdultos){
+		if(capacidadeAdultos < 1){
+			throw new DomainException(numero);
+		}
+		this.capacidadeAdultos = capacidadeAdultos;
+	}
+
 	public String getNumero(){
 		return numero;
 	}
