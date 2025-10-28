@@ -3,6 +3,7 @@ package com.fabiok.sistemahospedaria;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -15,11 +16,11 @@ public class QuartoHttpHandler implements HttpHandler
 		String method = exchange.getRequestMethod();
 		if(method.equalsIgnoreCase("POST")){
 			InputStream bodyStream = exchange.getRequestBody();
-
-
-
+			CadastrarQuartoCommand command = mapper.readValue(bodyStream, CadastrarQuartoCommand.class);
 			QuartoIdao quartoIdao = new QuartoIdao();
-			quartoIdao.save(null);
+			quartoIdao.save(QuartoMapper.from(command));
+			exchange.sendResponseHeaders(201, -1);
+			exchange.getResponseBody().close();
 		}
 	}
 		

@@ -1,4 +1,6 @@
 package com.fabiok.sistemahospedaria;
 
-public record CadastrarQuartoCommand(String numero, private Integer capacidadeAdultos, Integer capacidadeCriancas,
- BigDecimal preco, String status, String tipoQuarto) {}
+import java.math.BigDecimal;
+
+public record CadastrarQuartoCommand(String numero, Integer capacidadeAdultos, Integer capacidadeCriancas,
+                                     BigDecimal preco, String status, String tipoQuarto) {}
