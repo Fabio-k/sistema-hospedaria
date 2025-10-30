@@ -1,0 +1,26 @@
+meta {
+  name: post - quarto
+  type: http
+  seq: 1
+}
+
+post {
+  url: localhost:8080/quarto
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "numero":"132", 
+    "capacidadeAdultos":2, 
+    "capacidadeCriancas":3,
+    "preco":12.40, 
+    "status":"ATIVO", 
+    "tipoQuarto": "SINGLE"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
