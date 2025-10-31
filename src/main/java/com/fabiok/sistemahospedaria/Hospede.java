@@ -9,4 +9,37 @@ public class Hospede {
 	private LocalDate dataNascimento;
 	private String telefone;
 	private String email;
+
+	public Hospede(String id, String nomeCompleto, String cpf, LocalDate dataNascimento, String telefone, String email) {
+		this.id = id;
+		this.nomeCompleto = nomeCompleto;
+		this.cpf = cpf;
+		this.dataNascimento = dataNascimento;
+		this.telefone = telefone;
+		this.email = email;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getNomeCompleto() {
+		return nomeCompleto;
+	}
+
+	public String getCpf() {
+		return cpf;
+	}
+
+	public LocalDate getDataNascimento() {
+		return dataNascimento;
+	}
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
 }
