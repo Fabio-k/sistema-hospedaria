@@ -1,0 +1,26 @@
+meta {
+  name: post - hospede
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/hospede
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nomeCompleto" :  "fabio",
+    "cpf" : "53454342334",
+    "dataNascimento": "04/04/2004",
+    "telefone": "11950333101",
+    "email": "teste@email.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

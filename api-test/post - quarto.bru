@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: localhost:8080/quarto
+  url: http://localhost:8080/quarto
   body: json
   auth: inherit
 }
@@ -23,4 +23,5 @@ body:json {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
