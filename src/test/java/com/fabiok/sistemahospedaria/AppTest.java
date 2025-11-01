@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.fabiok.sistemahospedaria.utils.ValidadorCpf;
+
 /**
  * Unit test for simple App.
  */
@@ -16,4 +18,9 @@ public class AppTest {
     public void shouldAnswerWithTrue() {
         assertTrue(true);
     }
+
+	@Test
+	public void deveRetornarVerdadeiro(){
+		assertTrue(ValidadorCpf.validar("936.288.840-80"));
+	}
 }
