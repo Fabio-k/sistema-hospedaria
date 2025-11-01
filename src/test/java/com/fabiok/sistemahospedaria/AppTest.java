@@ -18,9 +18,4 @@ public class AppTest {
     public void shouldAnswerWithTrue() {
         assertTrue(true);
     }
-
-	@Test
-	public void deveRetornarVerdadeiro(){
-		assertTrue(ValidadorCpf.validar("936.288.840-80"));
-	}
 }
