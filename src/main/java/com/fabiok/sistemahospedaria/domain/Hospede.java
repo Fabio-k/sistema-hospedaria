@@ -1,8 +1,6 @@
-package com.fabiok.sistemahospedaria;
+package com.fabiok.sistemahospedaria.domain;
 
 import java.time.LocalDate;
-
-import com.fabiok.sistemahospedaria.utils.ValidadorCpf;
 
 public class Hospede {
 	private String id;

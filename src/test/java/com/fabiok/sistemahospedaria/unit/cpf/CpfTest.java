@@ -1,6 +1,6 @@
 package com.fabiok.sistemahospedaria.unit.cpf;
 
-import com.fabiok.sistemahospedaria.Cpf;
+import com.fabiok.sistemahospedaria.domain.Cpf;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

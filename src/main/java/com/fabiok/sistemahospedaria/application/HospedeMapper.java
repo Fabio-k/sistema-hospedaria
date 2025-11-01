@@ -1,4 +1,6 @@
-package com.fabiok.sistemahospedaria;
+package com.fabiok.sistemahospedaria.application;
+
+import com.fabiok.sistemahospedaria.domain.Hospede;
 
 public class HospedeMapper
 {

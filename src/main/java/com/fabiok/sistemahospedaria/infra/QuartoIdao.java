@@ -1,4 +1,6 @@
-package com.fabiok.sistemahospedaria;
+package com.fabiok.sistemahospedaria.infra;
+import com.fabiok.sistemahospedaria.domain.Quarto;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
 

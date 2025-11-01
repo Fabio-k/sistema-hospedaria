@@ -1,4 +1,4 @@
-package com.fabiok.sistemahospedaria;
+package com.fabiok.sistemahospedaria.application;
 
 import java.time.LocalDate;
 

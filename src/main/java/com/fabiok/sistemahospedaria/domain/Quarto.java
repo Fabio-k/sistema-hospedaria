@@ -1,4 +1,6 @@
-package com.fabiok.sistemahospedaria;
+package com.fabiok.sistemahospedaria.domain;
+import com.fabiok.sistemahospedaria.DomainException;
+
 import java.math.BigDecimal;
 
 public class Quarto {

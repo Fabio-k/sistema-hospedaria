@@ -1,4 +1,4 @@
-package com.fabiok.sistemahospedaria;
+package com.fabiok.sistemahospedaria.utils;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

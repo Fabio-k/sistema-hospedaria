@@ -1,5 +1,8 @@
-package com.fabiok.sistemahospedaria;
+package com.fabiok.sistemahospedaria.application;
 
+import com.fabiok.sistemahospedaria.domain.Hospede;
+import com.fabiok.sistemahospedaria.infra.HospedeDao;
+import com.fabiok.sistemahospedaria.infra.Idao;
 import com.fabiok.sistemahospedaria.utils.ObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;

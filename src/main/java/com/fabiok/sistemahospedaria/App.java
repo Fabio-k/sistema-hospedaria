@@ -1,5 +1,7 @@
 package com.fabiok.sistemahospedaria;
 
+import com.fabiok.sistemahospedaria.application.HospedeHttpHandler;
+import com.fabiok.sistemahospedaria.application.QuartoHttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;

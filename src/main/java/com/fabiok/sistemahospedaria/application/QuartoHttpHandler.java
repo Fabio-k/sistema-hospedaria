@@ -1,8 +1,9 @@
-package com.fabiok.sistemahospedaria;
+package com.fabiok.sistemahospedaria.application;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.fabiok.sistemahospedaria.infra.QuartoIdao;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

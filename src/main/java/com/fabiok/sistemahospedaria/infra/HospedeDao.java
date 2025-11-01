@@ -1,13 +1,13 @@
-package com.fabiok.sistemahospedaria;
+package com.fabiok.sistemahospedaria.infra;
 
 
-import com.fabiok.sistemahospedaria.infra.SqliteConnection;
+import com.fabiok.sistemahospedaria.domain.Hospede;
 
 import java.sql.Date;
 import java.sql.SQLException;
 
 
-public class HospedeDao implements Idao<Hospede>{
+public class HospedeDao implements Idao<Hospede> {
     private String sql = "INSERT INTO hospede (hos_nome_completo, hos_cpf,hos_data_nascimento, hos_telefone, hos_email) VALUES (?, ?, ?, ?, ?);";
 
     @Override
