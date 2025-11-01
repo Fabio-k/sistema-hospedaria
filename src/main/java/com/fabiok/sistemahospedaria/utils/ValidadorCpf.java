@@ -19,6 +19,12 @@ public class ValidadorCpf {
 		}
 		Integer firstValidation =  (sum * 10) % 11;
 		Integer secondValidation = (sum2 * 10) % 11;
+		if(secondValidation == 10){
+			secondValidation = 0;
+		}
+		if(firstValidation == 10){
+			firstValidation = 0;
+		}
 
 		return digitoValidador1 == firstValidation && digitoValidador2 == secondValidation;
 	}
