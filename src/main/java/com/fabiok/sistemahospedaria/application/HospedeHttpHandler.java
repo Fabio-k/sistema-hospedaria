@@ -1,5 +1,6 @@
 package com.fabiok.sistemahospedaria.application;
 
+import com.fabiok.sistemahospedaria.application.mapper.HospedeMapper;
 import com.fabiok.sistemahospedaria.domain.Hospede;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
 import com.fabiok.sistemahospedaria.infra.Idao;
