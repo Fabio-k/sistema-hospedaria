@@ -45,7 +45,9 @@ CREATE TABLE hospede (
 	hos_cpf VARCHAR(20) NOT NULL,
 	hos_data_nascimento DATE NOT NULL,
 	hos_telefone VARCHAR(20) NOT NULL,
-	hos_email VARCHAR(30) NOT NULL
+	hos_email VARCHAR(30) NOT NULL,
+	hos_end_id INTEGER NOT NULL,
+	FOREIGN KEY (hos_end_id) REFERENCES endereco(end_id)
 );
 
 CREATE TABLE endereco (
