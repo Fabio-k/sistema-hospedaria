@@ -2,7 +2,7 @@ package com.fabiok.sistemahospedaria.infra;
 
 
 import com.fabiok.sistemahospedaria.domain.Endereco;
-import com.fabiok.sistemahospedaria.domain.Hospede;
+import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -29,6 +29,19 @@ public class HospedeDao implements Idao<Hospede> {
             conn.commit();
         }catch (SQLException e){
             e.printStackTrace();
+        }
+    }
+
+    public Boolean existsByCpf(String cpf){
+        String sql = "SELECT 1 FROM hospede WHERE hos_cpf = ?;";
+        try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql);){
+            psmt.setString(1, cpf.replaceAll("\\D", ""));
+            try(var rs = psmt.executeQuery()){
+                return rs.next();
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
         }
     }
 }

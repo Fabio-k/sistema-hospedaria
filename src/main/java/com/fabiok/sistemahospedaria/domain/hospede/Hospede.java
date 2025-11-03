@@ -1,4 +1,7 @@
-package com.fabiok.sistemahospedaria.domain;
+package com.fabiok.sistemahospedaria.domain.hospede;
+
+import com.fabiok.sistemahospedaria.domain.Cpf;
+import com.fabiok.sistemahospedaria.domain.Endereco;
 
 import java.time.LocalDate;
 
