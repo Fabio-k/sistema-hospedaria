@@ -1,6 +1,6 @@
 package com.fabiok.sistemahospedaria.application.mapper;
 
-import com.fabiok.sistemahospedaria.application.EnderecoCommand;
+import com.fabiok.sistemahospedaria.application.command.EnderecoCommand;
 import com.fabiok.sistemahospedaria.domain.Endereco;
 
 public class EnderecoMapper {

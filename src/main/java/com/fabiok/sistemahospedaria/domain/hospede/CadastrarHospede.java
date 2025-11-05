@@ -1,6 +1,6 @@
 package com.fabiok.sistemahospedaria.domain.hospede;
 
-import com.fabiok.sistemahospedaria.application.CadastrarHospedeCommand;
+import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.mapper.HospedeMapper;
 import com.fabiok.sistemahospedaria.domain.ErroHandler;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;

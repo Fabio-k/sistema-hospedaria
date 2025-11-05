@@ -1,4 +1,4 @@
-package com.fabiok.sistemahospedaria.application;
+package com.fabiok.sistemahospedaria.application.command;
 
 import java.math.BigDecimal;
 

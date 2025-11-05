@@ -1,6 +1,4 @@
-package com.fabiok.sistemahospedaria.application;
-
-import com.fabiok.sistemahospedaria.domain.Endereco;
+package com.fabiok.sistemahospedaria.application.command;
 
 import java.time.LocalDate;
 

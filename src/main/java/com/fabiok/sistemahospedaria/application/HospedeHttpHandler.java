@@ -1,5 +1,6 @@
 package com.fabiok.sistemahospedaria.application;
 
+import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
 import com.fabiok.sistemahospedaria.domain.hospede.CadastrarHospede;
 import com.fabiok.sistemahospedaria.utils.ObjectMapperProvider;
@@ -29,7 +30,7 @@ public class HospedeHttpHandler implements HttpHandler {
                 exchange.getResponseBody().write(json);
             } catch (Exception e) {
                 e.printStackTrace();
-                exchange.sendResponseHeaders(400, -1);
+                exchange.sendResponseHeaders(500, -1);
             } finally {
                 exchange.getResponseBody().close();
             }

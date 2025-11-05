@@ -1,6 +1,6 @@
 package com.fabiok.sistemahospedaria.application.mapper;
 
-import com.fabiok.sistemahospedaria.application.CadastrarHospedeCommand;
+import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 
 public class HospedeMapper

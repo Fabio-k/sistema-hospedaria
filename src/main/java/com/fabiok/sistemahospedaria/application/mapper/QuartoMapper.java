@@ -1,6 +1,6 @@
 package com.fabiok.sistemahospedaria.application.mapper;
 
-import com.fabiok.sistemahospedaria.application.CadastrarQuartoCommand;
+import com.fabiok.sistemahospedaria.application.command.CadastrarQuartoCommand;
 import com.fabiok.sistemahospedaria.domain.Quarto;
 
 public class QuartoMapper {
