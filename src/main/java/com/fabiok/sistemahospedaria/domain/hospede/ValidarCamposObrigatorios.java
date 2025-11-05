@@ -3,8 +3,8 @@ package com.fabiok.sistemahospedaria.domain.hospede;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fabiok.sistemahospedaria.application.CadastrarHospedeCommand;
-import com.fabiok.sistemahospedaria.application.EnderecoCommand;
+import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
+import com.fabiok.sistemahospedaria.application.command.EnderecoCommand;
 import com.fabiok.sistemahospedaria.domain.ErroHandler;
 
 public class ValidarCamposObrigatorios implements IStrategyValidacaoHospede {
@@ -34,7 +34,7 @@ public class ValidarCamposObrigatorios implements IStrategyValidacaoHospede {
         if(endereco == null) erroHandler.addErros(erroMessage("Endereço"));
     }
 
-	private void checkNullOrEmpty (String atribute, String atributeName, ErroHandler erroHandler){
+	private void checkNullOrEmpty (String atributeName, String atribute, ErroHandler erroHandler){
 		if(atribute == null || atribute.isBlank()) erroHandler.addErros(erroMessage(atributeName));
 	}
 
