@@ -7,17 +7,18 @@ import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
 import com.fabiok.sistemahospedaria.infra.Idao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CadastrarHospede {
     private Idao<Hospede> hospedeDao = new HospedeDao();
     private ErroHandler erroHandler = new ErroHandler();
-    private List<IStrategyValidacaoHospede> validacoes = new ArrayList<>();
+    private List<IStrategyValidacaoHospede> validacoes = List.of(
+		new ValidarCamposObrigatorios(),
+		new ValidarCpf(),
+		new ValidarEmail()
+	);
 
     public void execute(CadastrarHospedeCommand command){
-        validacoes.add(new ValidarCamposObrigatorios());
-        validacoes.add(new ValidarCpf());
         validacoes.forEach(v -> v.executar(command, erroHandler));
         if(erroHandler.hasErro()){
             throw new ValidationException(erroHandler.getErros());
