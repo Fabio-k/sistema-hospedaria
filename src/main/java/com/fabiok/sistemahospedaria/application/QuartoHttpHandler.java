@@ -3,6 +3,7 @@ package com.fabiok.sistemahospedaria.application;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.fabiok.sistemahospedaria.application.command.CadastrarQuartoCommand;
 import com.fabiok.sistemahospedaria.application.mapper.QuartoMapper;
 import com.fabiok.sistemahospedaria.infra.QuartoIdao;
 import com.fasterxml.jackson.databind.ObjectMapper;

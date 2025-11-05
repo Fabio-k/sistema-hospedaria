@@ -4,6 +4,10 @@ import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.mapper.HospedeMapper;
 import com.fabiok.sistemahospedaria.domain.ErroHandler;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
+import com.fabiok.sistemahospedaria.domain.hospede.validacoes.IStrategyValidacaoHospede;
+import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarCamposObrigatorios;
+import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarCpf;
+import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarEmail;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
 import com.fabiok.sistemahospedaria.infra.Idao;
 

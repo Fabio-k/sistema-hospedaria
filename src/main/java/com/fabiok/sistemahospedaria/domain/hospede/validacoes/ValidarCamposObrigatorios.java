@@ -1,4 +1,4 @@
-package com.fabiok.sistemahospedaria.domain.hospede;
+package com.fabiok.sistemahospedaria.domain.hospede.validacoes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +16,7 @@ public class ValidarCamposObrigatorios implements IStrategyValidacaoHospede {
 		atributesToValidate.put("E-mail", command.email());
 		atributesToValidate.put("Telefone", command.telefone());
 		atributesToValidate.put("Nome completo", command.nomeCompleto());
+		
 		EnderecoCommand endereco = command.endereco();
 		if(endereco != null){
 			atributesToValidate.put("CEP", endereco.cep());
