@@ -1,5 +1,8 @@
 package com.fabiok.sistemahospedaria.domain.hospede;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fabiok.sistemahospedaria.application.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.EnderecoCommand;
 import com.fabiok.sistemahospedaria.domain.ErroHandler;
@@ -8,24 +11,32 @@ public class ValidarCamposObrigatorios implements IStrategyValidacaoHospede {
 
     @Override
     public void executar(CadastrarHospedeCommand command, ErroHandler erroHandler) {
-        if(command.cpf() == null || command.cpf().isBlank()) erroHandler.addErros(erroMessage("Cpf"));
-        if(command.email() == null || command.email().isBlank()) erroHandler.addErros(erroMessage("Email"));
-        if(command.telefone() == null || command.telefone().isBlank()) erroHandler.addErros(erroMessage("Telefone"));
-        if(command.nomeCompleto() == null || command.nomeCompleto().isBlank()) erroHandler.addErros(erroMessage("Nome completo"));
+		Map<String, String> atributesToValidate = new HashMap<>(null);
+		atributesToValidate.put("Cpf", command.cpf());
+		atributesToValidate.put("E-mail", command.email());
+		atributesToValidate.put("Telefone", command.telefone());
+		atributesToValidate.put("Nome completo", command.nomeCompleto());
+		EnderecoCommand endereco = command.endereco();
+		if(endereco != null){
+			atributesToValidate.put("CEP", endereco.cep());
+			atributesToValidate.put("Cidade", endereco.cidade());
+			atributesToValidate.put("Complemento", endereco.complemento());
+			atributesToValidate.put("Bairro", endereco.bairro());
+			atributesToValidate.put("Estado", endereco.estado());
+			atributesToValidate.put("Numero", endereco.numero());
+			atributesToValidate.put("Logradouro", endereco.logradouro());
+
+		}
+
+		atributesToValidate.forEach((k, v) -> checkNullOrEmpty(k, v, erroHandler));
+
         if(command.dataNascimento() == null) erroHandler.addErros("Data de nascimento");
-        EnderecoCommand endereco = command.endereco();
-        if(endereco == null) {
-           erroHandler.addErros(erroMessage("Endereço"));
-           return;
-        }
-        if(endereco.cep() == null || endereco.cep().isBlank()) erroHandler.addErros(erroMessage("CEP"));
-        if(endereco.cidade() == null || endereco.cidade().isBlank()) erroHandler.addErros(erroMessage("Cidade"));
-        if(endereco.complemento() == null || endereco.complemento().isBlank()) erroHandler.addErros(erroMessage("Complemento"));
-        if(endereco.bairro() == null || endereco.bairro().isBlank()) erroHandler.addErros(erroMessage("Bairro"));
-        if(endereco.estado() == null || endereco.estado().isBlank()) erroHandler.addErros(erroMessage("Estado"));
-        if(endereco.numero() == null || endereco.numero().isBlank()) erroHandler.addErros(erroMessage("Numero do endereço"));
-        if(endereco.logradouro() == null || endereco.logradouro().isBlank()) erroHandler.addErros(erroMessage("Logradouro"));
+        if(endereco == null) erroHandler.addErros(erroMessage("Endereço"));
     }
+
+	private void checkNullOrEmpty (String atribute, String atributeName, ErroHandler erroHandler){
+		if(atribute == null || atribute.isBlank()) erroHandler.addErros(erroMessage(atributeName));
+	}
 
     private String erroMessage(String campo){
         return campo + " é obrigatório";
