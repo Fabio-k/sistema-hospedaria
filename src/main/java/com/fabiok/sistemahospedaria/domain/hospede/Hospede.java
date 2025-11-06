@@ -6,7 +6,7 @@ import com.fabiok.sistemahospedaria.domain.Endereco;
 import java.time.LocalDate;
 
 public class Hospede {
-	private String id;
+	private Integer id;
 	private String nomeCompleto;
 	private Cpf cpf;
 	private LocalDate dataNascimento;
@@ -14,7 +14,7 @@ public class Hospede {
 	private String email;
 	private Endereco endereco;
 
-	public Hospede(String id, String nomeCompleto, String cpf, LocalDate dataNascimento, String telefone, String email, Endereco endereco) {
+	public Hospede(Integer id, String nomeCompleto, String cpf, LocalDate dataNascimento, String telefone, String email, Endereco endereco) {
 		this.id = id;
 		this.nomeCompleto = nomeCompleto;
 		this.cpf = new Cpf(cpf);
@@ -24,7 +24,7 @@ public class Hospede {
 		this.endereco = endereco;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 

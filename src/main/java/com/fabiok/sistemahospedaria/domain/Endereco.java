@@ -1,7 +1,7 @@
 package com.fabiok.sistemahospedaria.domain;
 
 public class Endereco {
-    private String id;
+    private Integer id;
     private String cep;
     private String logradouro;
     private String cidade;
@@ -10,7 +10,7 @@ public class Endereco {
     private String complemento;
     private String estado;
 
-    public Endereco(String id, String cep, String logradouro, String cidade, String bairro, String numero, String complemento, String estado) {
+    public Endereco(Integer id, String cep, String logradouro, String cidade, String bairro, String numero, String complemento, String estado) {
         this.id = id;
         this.cep = cep;
         this.logradouro = logradouro;
@@ -21,7 +21,7 @@ public class Endereco {
         this.estado = estado;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
