@@ -6,6 +6,8 @@ import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class HospedeDao implements Idao<Hospede> {
@@ -44,4 +46,28 @@ public class HospedeDao implements Idao<Hospede> {
             return false;
         }
     }
+
+	@Override
+	public List<Hospede> findAll() {
+		String sql = "SELECT * FROM hospede h JOIN endereco e ON h.hos_end_id = e.end_id";
+        try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql);){
+            try(var rs = psmt.executeQuery()){
+                List<Hospede> hospedes = new ArrayList<>();
+				while (rs.next()) {
+					Endereco endereco = new Endereco(rs.getInt("end_id"), rs.getString("end_cep"), 
+					rs.getString("end_logradouro"), rs.getString("end_cidade"), rs.getString("end_bairro"), rs.getString("end_numero"), rs.getString("end_complemento"), rs.getString("end_estado"));
+					
+					Hospede hospede = new Hospede(rs.getInt("hos_id"), rs.getString("hos_nome_completo"), rs.getString("hos_cpf"), 
+					rs.getDate("hos_data_nascimento").toLocalDate(), rs.getString("hos_telefone"), rs.getString("hos_email"), endereco);
+
+					
+					hospedes.add(hospede);
+				}
+				return hospedes;
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            return List.of();
+        }
+	}
 }
