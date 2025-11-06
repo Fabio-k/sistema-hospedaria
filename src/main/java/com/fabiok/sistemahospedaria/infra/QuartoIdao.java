@@ -4,7 +4,7 @@ import com.fabiok.sistemahospedaria.domain.Quarto;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class QuartoIdao implements Idao<Quarto> {
+public class QuartoIdao {
 	public void save(Quarto quarto){
 		var sql = "INSERT INTO quarto(qua_numero, qua_tipo_quarto, qua_capacidade_adultos, qua_capacidade_criancas, qua_status, qua_preco_base) VALUES(?,?,?,?,?,?)";
 		var url = "jdbc:sqlite:hospedaria.db";

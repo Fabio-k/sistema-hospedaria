@@ -11,7 +11,7 @@ public class ValidarCamposObrigatorios implements IStrategyValidacaoHospede {
 
     @Override
     public void executar(CadastrarHospedeCommand command, ErroHandler erroHandler) {
-		Map<String, String> atributesToValidate = new HashMap<>(null);
+		Map<String, String> atributesToValidate = new HashMap<>();
 		atributesToValidate.put("Cpf", command.cpf());
 		atributesToValidate.put("E-mail", command.email());
 		atributesToValidate.put("Telefone", command.telefone());
