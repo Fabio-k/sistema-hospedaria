@@ -1,7 +1,10 @@
 package com.fabiok.sistemahospedaria.application;
 
+import com.fabiok.sistemahospedaria.DomainException;
 import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
+import com.fabiok.sistemahospedaria.application.command.EditarHospedeCommand;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
+import com.fabiok.sistemahospedaria.domain.hospede.AtualizarHospede;
 import com.fabiok.sistemahospedaria.domain.hospede.CadastrarHospede;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
@@ -22,6 +25,7 @@ public class HospedeHttpHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
         CadastrarHospede cadastrarHospede = new CadastrarHospede();
+		AtualizarHospede atualizarHospede = new AtualizarHospede();
 		HospedeDao hospedeDao = new HospedeDao();
 		try (InputStream bodyStream = exchange.getRequestBody()) {
         	if(method.equalsIgnoreCase("POST")){
@@ -36,9 +40,23 @@ public class HospedeHttpHandler implements HttpHandler {
 				exchange.sendResponseHeaders(200, json.length);
 				exchange.getResponseBody().write(json);
 			}
+
+			if(method.equalsIgnoreCase("PATCH")){
+				String[] parts = exchange.getRequestURI().getPath().split("/");
+				if(parts.length == 3){
+					Integer id = Integer.parseInt(parts[2]);
+					EditarHospedeCommand cmd = mapper.readValue(bodyStream, EditarHospedeCommand.class);
+					atualizarHospede.execute(id, cmd);
+					exchange.sendResponseHeaders(204, -1);
+				}
+			}
 		} catch (ValidationException e){
 			var json = mapper.writeValueAsBytes(Map.of("erros", e.getErros()));
 			exchange.sendResponseHeaders(400, json.length);
+			exchange.getResponseBody().write(json);
+		} catch(DomainException e){
+			var json = mapper.writeValueAsBytes(Map.of("erro", e.getMessage()));
+			exchange.sendResponseHeaders(e.getStatus(), json.length);
 			exchange.getResponseBody().write(json);
 		} catch (Exception e) {
 			e.printStackTrace();

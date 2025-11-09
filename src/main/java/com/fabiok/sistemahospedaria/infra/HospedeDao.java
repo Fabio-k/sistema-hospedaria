@@ -5,16 +5,21 @@ import com.fabiok.sistemahospedaria.domain.Endereco;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class HospedeDao implements Idao<Hospede> {
-    private String sql = "INSERT INTO hospede (hos_nome_completo, hos_cpf,hos_data_nascimento, hos_telefone, hos_email, hos_end_id) VALUES (?, ?, ?, ?, ?,?);";
     private IdaoRelation<Endereco> enderecoDao = new EnderecoDao();
     @Override
     public void save(Hospede entity) {
+		String sql = "INSERT INTO hospede (hos_nome_completo, hos_cpf,hos_data_nascimento, hos_telefone, hos_email, hos_end_id) VALUES (?, ?, ?, ?, ?,?);";
+		if(entity.getId() != null){
+			sql = "INSERT INTO hospede (hos_nome_completo, hos_cpf,hos_data_nascimento, hos_telefone, hos_email, hos_end_id, hos_id) VALUES (?, ?, ?, ?, ?,?, ?);";
+		}
         try (var conn = SqliteConnection.getConnection()){
             conn.setAutoCommit(false);
 
@@ -26,6 +31,7 @@ public class HospedeDao implements Idao<Hospede> {
                 pstm.setString(4, entity.getTelefone());
                 pstm.setString(5, entity.getEmail());
                 pstm.setInt(6, enderecoId);
+				if(entity.getId() != null) pstm.setInt(7, entity.getId());
                 pstm.executeUpdate();
             }
             conn.commit();
@@ -49,19 +55,12 @@ public class HospedeDao implements Idao<Hospede> {
 
 	@Override
 	public List<Hospede> findAll() {
-		String sql = "SELECT * FROM hospede h JOIN endereco e ON h.hos_end_id = e.end_id";
+		String sql = "SELECT * FROM hospede h JOIN endereco e ON h.hos_end_id = e.end_id;";
         try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql);){
             try(var rs = psmt.executeQuery()){
                 List<Hospede> hospedes = new ArrayList<>();
 				while (rs.next()) {
-					Endereco endereco = new Endereco(rs.getInt("end_id"), rs.getString("end_cep"), 
-					rs.getString("end_logradouro"), rs.getString("end_cidade"), rs.getString("end_bairro"), rs.getString("end_numero"), rs.getString("end_complemento"), rs.getString("end_estado"));
-					
-					Hospede hospede = new Hospede(rs.getInt("hos_id"), rs.getString("hos_nome_completo"), rs.getString("hos_cpf"), 
-					rs.getDate("hos_data_nascimento").toLocalDate(), rs.getString("hos_telefone"), rs.getString("hos_email"), endereco);
-
-					
-					hospedes.add(hospede);
+					hospedes.add(gerarHospede(rs));
 				}
 				return hospedes;
             }
@@ -69,5 +68,31 @@ public class HospedeDao implements Idao<Hospede> {
             e.printStackTrace();
             return List.of();
         }
+	}
+
+	public Optional<Hospede> findById(Integer id){
+		String sql = "SELECT * FROM hospede h JOIN endereco e ON h.hos_end_id = e.end_id WHERE hos_id = ?;";
+		try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql);){
+			psmt.setInt(1, id);
+            try(var rs = psmt.executeQuery()){
+                Hospede hospede = null;
+				if (rs.next()) {
+					hospede = gerarHospede(rs);
+				}
+				return Optional.of(hospede);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            return Optional.empty();
+        }
+
+	}
+
+	private Hospede gerarHospede(ResultSet rs) throws SQLException{
+		Endereco endereco = new Endereco(rs.getInt("end_id"), rs.getString("end_cep"), 
+		rs.getString("end_logradouro"), rs.getString("end_cidade"), rs.getString("end_bairro"), rs.getString("end_numero"), rs.getString("end_complemento"), rs.getString("end_estado"));
+					
+		return new Hospede(rs.getInt("hos_id"), rs.getString("hos_nome_completo"), rs.getString("hos_cpf"), 
+		rs.getDate("hos_data_nascimento").toLocalDate(), rs.getString("hos_telefone"), rs.getString("hos_email"), endereco);
 	}
 }

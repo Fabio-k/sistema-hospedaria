@@ -28,7 +28,7 @@ public class Quarto {
 
 	public void definirCapacidadeAdultos(Integer capacidadeAdultos){
 		if(capacidadeAdultos < 1){
-			throw new DomainException(numero);
+			throw new DomainException(numero, 400);
 		}
 		this.capacidadeAdultos = capacidadeAdultos;
 	}

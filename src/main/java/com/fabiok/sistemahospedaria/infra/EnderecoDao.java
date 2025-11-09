@@ -9,6 +9,7 @@ public class EnderecoDao implements IdaoRelation<Endereco> {
     private String sql = "INSERT INTO endereco (end_logradouro, end_numero, end_cep, end_bairro, end_complemento, end_cidade, end_estado) VALUES (?,?,?,?,?,?,?)";
     @Override
     public int save(Connection conn, Endereco entity) throws SQLException{
+		if(entity.getId() != null) {sql = "INSERT INTO endereco (end_logradouro, end_numero, end_cep, end_bairro, end_complemento, end_cidade, end_estado, end_id) VALUES (?,?,?,?,?,?,?,?)";}
         try(var pstm = conn.prepareStatement(sql)){
             pstm.setString(1, entity.getLogradouro());
             pstm.setString(2, entity.getNumero());
@@ -17,6 +18,7 @@ public class EnderecoDao implements IdaoRelation<Endereco> {
             pstm.setString(5, entity.getComplemento());
             pstm.setString(6, entity.getCidade());
             pstm.setString(7, entity.getEstado());
+			pstm.setInt(8, entity.getId());
             pstm.executeUpdate();
             try(var rs = pstm.getGeneratedKeys()){
                 if(rs.next()) return rs.getInt(1);
