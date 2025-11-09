@@ -7,9 +7,9 @@ public class ValidarEmail implements IStrategyValidacaoHospede{
 
 	@Override
 	public void executar(CadastrarHospedeCommand command, ErroHandler erroHandler) {
-		if(command.email() == null || command.email().isEmpty()) return;
+		if(command.getEmail() == null || command.getEmail().isEmpty()) return;
 
-		boolean isFormatoValido = command.email().matches("^\\w+@\\w+\\.\\w+$");
+		boolean isFormatoValido = command.getEmail().matches("^\\w+@\\w+\\.\\w+$");
 		if(!isFormatoValido){
 			erroHandler.addErros("E-mail está em um formato inválido");
 		}

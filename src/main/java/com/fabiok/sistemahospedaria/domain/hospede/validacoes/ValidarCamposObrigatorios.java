@@ -12,12 +12,12 @@ public class ValidarCamposObrigatorios implements IStrategyValidacaoHospede {
     @Override
     public void executar(CadastrarHospedeCommand command, ErroHandler erroHandler) {
 		Map<String, String> atributesToValidate = new HashMap<>();
-		atributesToValidate.put("Cpf", command.cpf());
-		atributesToValidate.put("E-mail", command.email());
-		atributesToValidate.put("Telefone", command.telefone());
-		atributesToValidate.put("Nome completo", command.nomeCompleto());
+		atributesToValidate.put("Cpf", command.getCpf());
+		atributesToValidate.put("E-mail", command.getEmail());
+		atributesToValidate.put("Telefone", command.getTelefone());
+		atributesToValidate.put("Nome completo", command.getNomeCompleto());
 		
-		EnderecoCommand endereco = command.endereco();
+		EnderecoCommand endereco = command.getEndereco();
 		if(endereco != null){
 			atributesToValidate.put("CEP", endereco.cep());
 			atributesToValidate.put("Cidade", endereco.cidade());
@@ -31,7 +31,7 @@ public class ValidarCamposObrigatorios implements IStrategyValidacaoHospede {
 
 		atributesToValidate.forEach((k, v) -> checkNullOrEmpty(k, v, erroHandler));
 
-        if(command.dataNascimento() == null) erroHandler.addErros("Data de nascimento");
+        if(command.getDataNascimento() == null) erroHandler.addErros("Data de nascimento");
         if(endereco == null) erroHandler.addErros(erroMessage("Endereço"));
     }
 

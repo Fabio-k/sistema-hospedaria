@@ -9,9 +9,9 @@ public class ValidarCpf implements IStrategyValidacaoHospede{
     HospedeDao hospedeDao = new HospedeDao();
     @Override
     public void executar(CadastrarHospedeCommand command, ErroHandler erroHandler) {
-		if(command.cpf() == null || command.cpf().isEmpty()) return;
-		boolean isFormatoCpfValido = ValidadorCpf.validar(command.cpf());
-		boolean isCpfJaUsado = hospedeDao.existsByCpf(command.cpf());
+		if(command.getCpf() == null || command.getCpf().isEmpty()) return;
+		boolean isFormatoCpfValido = ValidadorCpf.validar(command.getCpf());
+		boolean isCpfJaUsado = hospedeDao.existsByCpf(command.getCpf());
 
         if(!isFormatoCpfValido) erroHandler.addErros("CPF inválido");
         if(isCpfJaUsado) erroHandler.addErros("CPF já está em uso");
