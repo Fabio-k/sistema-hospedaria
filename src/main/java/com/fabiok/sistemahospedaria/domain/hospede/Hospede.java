@@ -86,4 +86,8 @@ public class Hospede {
 	public Endereco getEndereco(){
 		return endereco;
 	}
+
+	public void setId(Integer id){
+		this.id = id;
+	}
 }

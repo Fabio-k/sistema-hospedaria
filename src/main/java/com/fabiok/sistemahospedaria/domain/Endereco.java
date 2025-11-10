@@ -9,6 +9,7 @@ public class Endereco {
     private String numero;
     private String complemento;
     private String estado;
+    private Integer hospedeId;
 
     public Endereco(Integer id, String cep, String logradouro, String cidade, String bairro, String numero, String complemento, String estado) {
         this.id = id;
@@ -51,5 +52,13 @@ public class Endereco {
 
     public String getEstado(){
         return estado;
+    }
+
+    public Integer getHospedeId(){
+        return hospedeId;
+    }
+
+    public void setHospedeId(Integer hospedeId) {
+        this.hospedeId = hospedeId;
     }
 }

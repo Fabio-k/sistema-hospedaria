@@ -45,9 +45,7 @@ CREATE TABLE hospede (
 	hos_cpf VARCHAR(20) NOT NULL,
 	hos_data_nascimento DATE NOT NULL,
 	hos_telefone VARCHAR(20) NOT NULL,
-	hos_email VARCHAR(30) NOT NULL,
-	hos_end_id INTEGER NOT NULL,
-	FOREIGN KEY (hos_end_id) REFERENCES endereco(end_id)
+	hos_email VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE endereco (
@@ -58,7 +56,9 @@ CREATE TABLE endereco (
 	end_bairro VARCHAR(30) NOT NULL,
 	end_complemento VARCHAR(30) NOT NULL,
 	end_cidade VARCHAR(30) NOT NULL,
-	end_estado VARCHAR(30) NOT NULL
+	end_estado VARCHAR(30) NOT NULL,
+	end_hos_id INTEGER NOT NULL,
+    FOREIGN KEY (end_hos_id) REFERENCES hospede(hos_id) ON DELETE CASCADE
 );
 
 CREATE TABLE politica_cancelamento(

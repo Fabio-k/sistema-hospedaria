@@ -16,20 +16,23 @@ public class HospedeDao implements Idao<Hospede> {
     private IdaoRelation<Endereco> enderecoDao = new EnderecoDao();
     @Override
     public void save(Hospede entity) {
-		String sql = "INSERT INTO hospede (hos_nome_completo, hos_cpf,hos_data_nascimento, hos_telefone, hos_email, hos_end_id) VALUES (?, ?, ?, ?, ?,?);";
+		String sql = "INSERT INTO hospede (hos_nome_completo, hos_cpf,hos_data_nascimento, hos_telefone, hos_email) VALUES (?, ?, ?, ?, ?);";
         try (var conn = SqliteConnection.getConnection()){
             conn.setAutoCommit(false);
 
-            int enderecoId = enderecoDao.save(conn, entity.getEndereco());
             try(var pstm = conn.prepareStatement(sql)) {
                 pstm.setString(1, entity.getNomeCompleto());
                 pstm.setString(2, entity.getCpf());
                 pstm.setDate(3, Date.valueOf(entity.getDataNascimento()));
                 pstm.setString(4, entity.getTelefone());
                 pstm.setString(5, entity.getEmail());
-                pstm.setInt(6, enderecoId);
                 pstm.executeUpdate();
+                try(var rs = pstm.getGeneratedKeys()) {
+                    if(rs.next()) entity.setId(rs.getInt(1));
+                }
             }
+            entity.getEndereco().setHospedeId(entity.getId());
+            enderecoDao.save(conn, entity.getEndereco());
             conn.commit();
         }catch (SQLException e){
             e.printStackTrace();
@@ -96,7 +99,7 @@ public class HospedeDao implements Idao<Hospede> {
 
 	@Override
 	public List<Hospede> findAll() {
-		String sql = "SELECT * FROM hospede h JOIN endereco e ON h.hos_end_id = e.end_id;";
+		String sql = "SELECT * FROM hospede h JOIN endereco e ON e.end_hos_id = h.hos_id;";
         try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql);){
             try(var rs = psmt.executeQuery()){
                 List<Hospede> hospedes = new ArrayList<>();
@@ -112,15 +115,16 @@ public class HospedeDao implements Idao<Hospede> {
 	}
 
 	public Optional<Hospede> findById(Integer id){
-		String sql = "SELECT * FROM hospede h JOIN endereco e ON h.hos_end_id = e.end_id WHERE hos_id = ?;";
+		String sql = "SELECT * FROM hospede h JOIN endereco e ON h.hos_id = e.end_hos_id WHERE hos_id = ?;";
 		try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql);){
 			psmt.setInt(1, id);
             try(var rs = psmt.executeQuery()){
                 Hospede hospede = null;
 				if (rs.next()) {
 					hospede = gerarHospede(rs);
-				}
-				return Optional.of(hospede);
+                    return Optional.of(hospede);
+                }
+				return Optional.empty();
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -132,6 +136,7 @@ public class HospedeDao implements Idao<Hospede> {
     private Hospede gerarHospede(ResultSet rs) throws SQLException{
 		Endereco endereco = new Endereco(rs.getInt("end_id"), rs.getString("end_cep"), 
 		rs.getString("end_logradouro"), rs.getString("end_cidade"), rs.getString("end_bairro"), rs.getString("end_numero"), rs.getString("end_complemento"), rs.getString("end_estado"));
+        endereco.setHospedeId(rs.getInt("end_hos_id"));
 					
 		return new Hospede(rs.getInt("hos_id"), rs.getString("hos_nome_completo"), rs.getString("hos_cpf"), 
 		rs.getDate("hos_data_nascimento").toLocalDate(), rs.getString("hos_telefone"), rs.getString("hos_email"), endereco);
