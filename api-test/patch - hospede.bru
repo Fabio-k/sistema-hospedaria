@@ -1,0 +1,35 @@
+meta {
+  name: patch - hospede
+  type: http
+  seq: 5
+}
+
+patch {
+  url: http://localhost:8080/hospede/2
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nomeCompleto" :  "fabio k",
+    "cpf" : "52352283833",
+    "dataNascimento": "2004-04-23",
+    "telefone": "11950663110",
+    "email": "fabio@email.com",
+    "endereco" : {
+      "logradouro": "avenida josé benedito braga",
+      "bairro": "Mogilar",
+      "complemento": "casa",
+      "numero": "119",
+      "cidade": "mogi",
+      "estado": "são paulo",
+      "cep": "54354334"
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
