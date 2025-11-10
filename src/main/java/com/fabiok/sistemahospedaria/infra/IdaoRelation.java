@@ -5,4 +5,6 @@ import java.sql.SQLException;
 
 public interface IdaoRelation<T> {
     public int save(Connection conn, T entity) throws SQLException;
+
+    void update(Connection conn, T entity) throws SQLException;
 }

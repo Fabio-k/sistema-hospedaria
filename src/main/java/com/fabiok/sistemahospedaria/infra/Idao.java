@@ -7,4 +7,5 @@ public interface Idao <T>{
 	void save(T entity);
 	List<T> findAll();
 	Optional<T> findById(Integer id);
+	void update(T entity);
 }

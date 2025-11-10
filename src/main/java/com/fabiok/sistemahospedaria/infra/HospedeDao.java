@@ -17,9 +17,6 @@ public class HospedeDao implements Idao<Hospede> {
     @Override
     public void save(Hospede entity) {
 		String sql = "INSERT INTO hospede (hos_nome_completo, hos_cpf,hos_data_nascimento, hos_telefone, hos_email, hos_end_id) VALUES (?, ?, ?, ?, ?,?);";
-		if(entity.getId() != null){
-			sql = "INSERT INTO hospede (hos_nome_completo, hos_cpf,hos_data_nascimento, hos_telefone, hos_email, hos_end_id, hos_id) VALUES (?, ?, ?, ?, ?,?, ?);";
-		}
         try (var conn = SqliteConnection.getConnection()){
             conn.setAutoCommit(false);
 
@@ -31,7 +28,6 @@ public class HospedeDao implements Idao<Hospede> {
                 pstm.setString(4, entity.getTelefone());
                 pstm.setString(5, entity.getEmail());
                 pstm.setInt(6, enderecoId);
-				if(entity.getId() != null) pstm.setInt(7, entity.getId());
                 pstm.executeUpdate();
             }
             conn.commit();
@@ -40,14 +36,59 @@ public class HospedeDao implements Idao<Hospede> {
         }
     }
 
-    public Boolean existsByCpf(String cpf){
-        String sql = "SELECT 1 FROM hospede WHERE hos_cpf = ?;";
-        try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql);){
+    @Override
+    public void update(Hospede entity) {
+        String sql = """
+            UPDATE hospede
+            SET 
+                hos_nome_completo = ?,
+                hos_cpf = ?,
+                hos_data_nascimento = ?,
+                hos_telefone = ?,
+                hos_email = ?    
+            WHERE hos_id = ?;
+        """;
+
+        try (var conn = SqliteConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            conn.setAutoCommit(false);
+
+            enderecoDao.update(conn, entity.getEndereco());
+            try (var pstm = conn.prepareStatement(sql)) {
+                pstm.setString(1, entity.getNomeCompleto());
+                pstm.setString(2, entity.getCpf());
+                pstm.setDate(3, Date.valueOf(entity.getDataNascimento()));
+                pstm.setString(4, entity.getTelefone());
+                pstm.setString(5, entity.getEmail());
+                pstm.setInt(6, entity.getId());
+                pstm.executeUpdate();
+            }
+            conn.commit();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public Boolean existsByCpf(String cpf, Integer id) {
+        String sql;
+        boolean isUpdate = id != null;
+
+        if (isUpdate) {
+            sql = "SELECT 1 FROM hospede WHERE hos_cpf = ? AND hos_id != ?;";
+        } else {
+            sql = "SELECT 1 FROM hospede WHERE hos_cpf = ?;";
+        }
+
+        try (var conn = SqliteConnection.getConnection();
+             var psmt = conn.prepareStatement(sql)) {
+
             psmt.setString(1, cpf.replaceAll("\\D", ""));
-            try(var rs = psmt.executeQuery()){
+            if (isUpdate) psmt.setInt(2, id);
+
+            try (var rs = psmt.executeQuery()) {
                 return rs.next();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -88,7 +129,7 @@ public class HospedeDao implements Idao<Hospede> {
 
 	}
 
-	private Hospede gerarHospede(ResultSet rs) throws SQLException{
+    private Hospede gerarHospede(ResultSet rs) throws SQLException{
 		Endereco endereco = new Endereco(rs.getInt("end_id"), rs.getString("end_cep"), 
 		rs.getString("end_logradouro"), rs.getString("end_cidade"), rs.getString("end_bairro"), rs.getString("end_numero"), rs.getString("end_complemento"), rs.getString("end_estado"));
 					

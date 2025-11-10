@@ -6,8 +6,11 @@ public class Cpf {
     private final String valor;
 
     public  Cpf(String valor){
-        if(!ValidadorCpf.validar(valor)) throw new IllegalArgumentException("CPF inváldo");
         this.valor = valor.replaceAll("\\D", "");
+    }
+
+    public void validar(Notification notification){
+        if(!ValidadorCpf.validar(valor)) notification.addErros("CPF inválido");
     }
 
     public String getValor() { return valor; }
