@@ -72,6 +72,17 @@ public class HospedeDao implements Idao<Hospede> {
         }
     }
 
+    @Override
+    public void delete(Integer id) {
+        String sql = "DELETE from hospede WHERE hos_id = ?;";
+        try(var conn = SqliteConnection.getConnection(); var pstm = conn.prepareStatement(sql)){
+                    pstm.setInt(1, id);
+                    pstm.executeUpdate();
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Boolean existsByCpf(String cpf, Integer id) {
         String sql;
         boolean isUpdate = id != null;

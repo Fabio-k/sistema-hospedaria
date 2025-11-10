@@ -6,6 +6,7 @@ import com.fabiok.sistemahospedaria.application.command.EditarHospedeCommand;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
 import com.fabiok.sistemahospedaria.domain.hospede.AtualizarHospede;
 import com.fabiok.sistemahospedaria.domain.hospede.CadastrarHospede;
+import com.fabiok.sistemahospedaria.domain.hospede.ExcluirHospede;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
 import com.fabiok.sistemahospedaria.utils.ObjectMapperProvider;
@@ -26,6 +27,7 @@ public class HospedeHttpHandler implements HttpHandler {
         String method = exchange.getRequestMethod();
         CadastrarHospede cadastrarHospede = new CadastrarHospede();
 		AtualizarHospede atualizarHospede = new AtualizarHospede();
+		ExcluirHospede excluirHospede = new ExcluirHospede();
 		HospedeDao hospedeDao = new HospedeDao();
 		try (InputStream bodyStream = exchange.getRequestBody()) {
         	if(method.equalsIgnoreCase("POST")){
@@ -47,6 +49,15 @@ public class HospedeHttpHandler implements HttpHandler {
 					Integer id = Integer.parseInt(parts[2]);
 					EditarHospedeCommand cmd = mapper.readValue(bodyStream, EditarHospedeCommand.class);
 					atualizarHospede.execute(id, cmd);
+					exchange.sendResponseHeaders(204, -1);
+				}
+			}
+
+			if(method.equalsIgnoreCase("DELETE")){
+				String[] parts = exchange.getRequestURI().getPath().split("/");
+				if(parts.length == 3) {
+					Integer id = Integer.parseInt(parts[2]);
+					excluirHospede.execute(id);
 					exchange.sendResponseHeaders(204, -1);
 				}
 			}

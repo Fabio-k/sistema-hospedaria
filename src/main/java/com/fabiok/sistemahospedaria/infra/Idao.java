@@ -8,4 +8,5 @@ public interface Idao <T>{
 	List<T> findAll();
 	Optional<T> findById(Integer id);
 	void update(T entity);
+	void delete(Integer id);
 }
