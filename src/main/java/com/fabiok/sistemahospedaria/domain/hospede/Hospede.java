@@ -31,13 +31,16 @@ public class Hospede {
 
 	public void validar(Notification notificacao){
 		List<FieldToBeValidated> fieldsToValidate = new ArrayList<>();
-
-		fieldsToValidate.add(new FieldToBeValidated("cpf", "CPF", cpf != null ? cpf.getValor() : null));
+		String cpfValor = null;
+		if(cpf != null){
+			cpfValor = cpf.getValor();
+			fieldsToValidate.add(new FieldToBeValidated("cpf", "CPF", cpfValor));
+			cpf.validar(notificacao);
+		}
 		fieldsToValidate.add(new FieldToBeValidated("email", "E-mail", email));
 		fieldsToValidate.add(new FieldToBeValidated("telefone", "Telefone", telefone));
 		fieldsToValidate.add(new FieldToBeValidated("nomeCompleto", "Nome completo", nomeCompleto));
 
-		Endereco endereco = getEndereco();
 		if (endereco != null) {
 			fieldsToValidate.add(new FieldToBeValidated("cep", "CEP", endereco.getCep()));
 			fieldsToValidate.add(new FieldToBeValidated("cidade", "Cidade", endereco.getCidade()));
@@ -52,7 +55,6 @@ public class Hospede {
 
 		if(dataNascimento == null) notificacao.addErros("Data de nascimento");
 		if(endereco == null) notificacao.addErros(ValidarNullOuEmpty.erroMessage("Endereço"));
-		cpf.validar(notificacao);
 	}
 
 	public Integer getId() {
