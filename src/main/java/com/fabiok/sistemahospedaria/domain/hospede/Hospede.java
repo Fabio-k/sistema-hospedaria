@@ -34,9 +34,9 @@ public class Hospede {
 		String cpfValor = null;
 		if(cpf != null){
 			cpfValor = cpf.getValor();
-			fieldsToValidate.add(new FieldToBeValidated("cpf", "CPF", cpfValor));
 			cpf.validar(notificacao);
 		}
+		fieldsToValidate.add(new FieldToBeValidated("cpf", "CPF", cpfValor));
 		fieldsToValidate.add(new FieldToBeValidated("email", "E-mail", email));
 		fieldsToValidate.add(new FieldToBeValidated("telefone", "Telefone", telefone));
 		fieldsToValidate.add(new FieldToBeValidated("nomeCompleto", "Nome completo", nomeCompleto));
