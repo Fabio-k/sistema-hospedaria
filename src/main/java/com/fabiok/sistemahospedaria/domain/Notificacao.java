@@ -3,7 +3,7 @@ package com.fabiok.sistemahospedaria.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Notification {
+public class Notificacao {
     private final List<String> erros = new ArrayList<>();
 
     public void addErros(String mensagemErro){

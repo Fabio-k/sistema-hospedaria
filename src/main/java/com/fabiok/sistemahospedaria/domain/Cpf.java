@@ -9,7 +9,7 @@ public class Cpf {
         this.valor = valor.replaceAll("\\D", "");
     }
 
-    public void validar(Notification notification){
+    public void validar(Notificacao notification){
         if(!ValidadorCpf.validar(valor)) notification.addErros("CPF inválido");
     }
 

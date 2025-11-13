@@ -3,11 +3,14 @@ package com.fabiok.sistemahospedaria.application;
 import com.fabiok.sistemahospedaria.DomainException;
 import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.command.EditarHospedeCommand;
+import com.fabiok.sistemahospedaria.domain.Notificacao;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
 import com.fabiok.sistemahospedaria.domain.hospede.AtualizarHospede;
 import com.fabiok.sistemahospedaria.domain.hospede.CadastrarHospede;
 import com.fabiok.sistemahospedaria.domain.hospede.ExcluirHospede;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
+import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarCpf;
+import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarEmail;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
 import com.fabiok.sistemahospedaria.utils.ObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,10 +28,18 @@ public class HospedeHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
-        CadastrarHospede cadastrarHospede = new CadastrarHospede();
-		AtualizarHospede atualizarHospede = new AtualizarHospede();
-		ExcluirHospede excluirHospede = new ExcluirHospede();
 		HospedeDao hospedeDao = new HospedeDao();
+		Notificacao notificacao = new Notificacao();
+        CadastrarHospede cadastrarHospede = new CadastrarHospede(hospedeDao, List.of(
+			new ValidarCpf(),
+			new ValidarEmail()
+		), notificacao);
+		AtualizarHospede atualizarHospede = new AtualizarHospede(hospedeDao, List.of(
+			new ValidarCpf(),
+			new ValidarEmail()
+		), notificacao);
+		ExcluirHospede excluirHospede = new ExcluirHospede(hospedeDao);
+
 		try (InputStream bodyStream = exchange.getRequestBody()) {
         	if(method.equalsIgnoreCase("POST")){
                 CadastrarHospedeCommand command = mapper.readValue(bodyStream, CadastrarHospedeCommand.class);
