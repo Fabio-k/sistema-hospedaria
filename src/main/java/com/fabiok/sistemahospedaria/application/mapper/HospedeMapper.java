@@ -1,25 +1,36 @@
 package com.fabiok.sistemahospedaria.application.mapper;
 
+import com.fabiok.sistemahospedaria.application.builder.HospedeBuilder;
 import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.command.EditarHospedeCommand;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 
 public class HospedeMapper
 {
+	
     public static Hospede from(CadastrarHospedeCommand cmd){
-        return new Hospede(null, cmd.getNomeCompleto(), cmd.getCpf(), cmd.getDataNascimento(), cmd.getTelefone(), cmd.getEmail(), EnderecoMapper.to(cmd.getEndereco()));
+		HospedeBuilder hospedeBuilder = new HospedeBuilder();
+		hospedeBuilder.setNomeCompleto(cmd.getNomeCompleto());
+		hospedeBuilder.setCpf(cmd.getCpf());
+    	hospedeBuilder.setDataNascimento(cmd.getDataNascimento());
+		hospedeBuilder.setTelefone(cmd.getTelefone());
+		hospedeBuilder.setEmail(cmd.getEmail());
+		hospedeBuilder.setEndereco(EnderecoMapper.to(cmd.getEndereco()));
+
+		return hospedeBuilder.criar();
     }
 
 	public static Hospede update(Hospede hospede, EditarHospedeCommand cmd) {
-    return new Hospede(
-        hospede.getId(),
-        updatedValue(hospede.getNomeCompleto(), cmd.getNomeCompleto()),
-        updatedValue(hospede.getCpf(), cmd.getCpf()),
-        updatedValue(hospede.getDataNascimento(), cmd.getDataNascimento()),
-        updatedValue(hospede.getTelefone(), cmd.getTelefone()),
-        updatedValue(hospede.getEmail(), cmd.getEmail()),
-        EnderecoMapper.update(hospede.getEndereco(), cmd.getEndereco())
-    );
+		HospedeBuilder hospedeBuilder = new HospedeBuilder();
+		hospedeBuilder.setId(hospede.getId());
+		hospedeBuilder.setNomeCompleto(updatedValue(hospede.getNomeCompleto(), cmd.getNomeCompleto()));
+		hospedeBuilder.setCpf(updatedValue(hospede.getCpf(), cmd.getCpf()));
+    	hospedeBuilder.setDataNascimento(updatedValue(hospede.getDataNascimento(), cmd.getDataNascimento()));
+		hospedeBuilder.setTelefone(updatedValue(hospede.getTelefone(), cmd.getTelefone()));
+		hospedeBuilder.setEmail(updatedValue(hospede.getEmail(), cmd.getEmail()));
+		hospedeBuilder.setEndereco(EnderecoMapper.update(hospede.getEndereco(), cmd.getEndereco()));
+
+		return hospedeBuilder.criar();
 }
 
 	public static <T> T updatedValue(T old, T newValue){
