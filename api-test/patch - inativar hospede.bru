@@ -1,0 +1,16 @@
+meta {
+  name: patch - inativar hospede
+  type: http
+  seq: 8
+}
+
+patch {
+  url: http://localhost:8080/hospede/1/inativar
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

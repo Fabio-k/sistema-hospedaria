@@ -5,18 +5,19 @@ meta {
 }
 
 patch {
-  url: http://localhost:8080/hospede/2
+  url: http://localhost:8080/hospede/1
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "nomeCompleto" :  "fabio k",
+    "nomeCompleto" :  "joão",
     "cpf" : "52352283833",
-    "dataNascimento": "2004-04-23",
+    "dataNascimento": "2004-07-23",
     "telefone": "11950663110",
     "email": "fabio@email.com",
+    "status": "INATIVO",
     "endereco" : {
       "logradouro": "avenida josé benedito braga",
       "bairro": "Mogilar",
