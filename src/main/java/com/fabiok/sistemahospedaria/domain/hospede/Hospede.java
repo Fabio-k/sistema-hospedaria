@@ -1,5 +1,6 @@
 package com.fabiok.sistemahospedaria.domain.hospede;
 
+import com.fabiok.sistemahospedaria.DomainException;
 import com.fabiok.sistemahospedaria.domain.Cpf;
 import com.fabiok.sistemahospedaria.domain.Endereco;
 import com.fabiok.sistemahospedaria.domain.Notificacao;
@@ -84,6 +85,12 @@ public class Hospede {
 
 	public void definirCpf(String cpf){
 		this.cpf = new Cpf(cpf);
+	}
+
+	public void definirStatus(HospedeStatus status){
+		String statusMessage = this.status.toString().toLowerCase();
+		if(this.status == status) throw new DomainException("Status já está " + statusMessage , id);
+		this.status = status;
 	}
 
 	public String getCpf() {

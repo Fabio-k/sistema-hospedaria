@@ -6,6 +6,7 @@ import com.fabiok.sistemahospedaria.application.command.EditarHospedeCommand;
 import com.fabiok.sistemahospedaria.domain.Notificacao;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
 import com.fabiok.sistemahospedaria.domain.hospede.AtualizarHospede;
+import com.fabiok.sistemahospedaria.domain.hospede.AtualizarStatusHospede;
 import com.fabiok.sistemahospedaria.domain.hospede.CadastrarHospede;
 import com.fabiok.sistemahospedaria.domain.hospede.ExcluirHospede;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
@@ -39,6 +40,7 @@ public class HospedeHttpHandler implements HttpHandler {
 			new ValidarEmail()
 		), notificacao);
 		ExcluirHospede excluirHospede = new ExcluirHospede(hospedeDao);
+		AtualizarStatusHospede atualizarStatusHospede = new AtualizarStatusHospede(hospedeDao);
 
 		try (InputStream bodyStream = exchange.getRequestBody()) {
         	if(method.equalsIgnoreCase("POST")){
@@ -56,8 +58,12 @@ public class HospedeHttpHandler implements HttpHandler {
 
 			if(method.equalsIgnoreCase("PATCH")){
 				String[] parts = exchange.getRequestURI().getPath().split("/");
+				Integer id = Integer.parseInt(parts[2]);
+				if(parts.length == 4){
+					String status = parts[3];
+					atualizarStatusHospede.execute(id, status);
+				}
 				if(parts.length == 3){
-					Integer id = Integer.parseInt(parts[2]);
 					EditarHospedeCommand cmd = mapper.readValue(bodyStream, EditarHospedeCommand.class);
 					atualizarHospede.execute(id, cmd);
 					exchange.sendResponseHeaders(204, -1);
