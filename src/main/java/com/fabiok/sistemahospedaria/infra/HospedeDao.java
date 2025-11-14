@@ -3,6 +3,7 @@ package com.fabiok.sistemahospedaria.infra;
 
 import com.fabiok.sistemahospedaria.domain.Endereco;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
+import com.fabiok.sistemahospedaria.domain.hospede.HospedeStatus;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -16,7 +17,7 @@ public class HospedeDao implements Idao<Hospede> {
     private IdaoRelation<Endereco> enderecoDao = new EnderecoDao();
     @Override
     public void save(Hospede entity) {
-		String sql = "INSERT INTO hospede (hos_nome_completo, hos_cpf,hos_data_nascimento, hos_telefone, hos_email) VALUES (?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO hospede (hos_nome_completo, hos_cpf,hos_data_nascimento, hos_telefone, hos_email, hos_status) VALUES (?, ?, ?, ?, ?,?);";
         try (var conn = SqliteConnection.getConnection()){
             conn.setAutoCommit(false);
 
@@ -26,6 +27,7 @@ public class HospedeDao implements Idao<Hospede> {
                 pstm.setDate(3, Date.valueOf(entity.getDataNascimento()));
                 pstm.setString(4, entity.getTelefone());
                 pstm.setString(5, entity.getEmail());
+                pstm.setString(6, entity.getStatus().toString());
                 pstm.executeUpdate();
                 try(var rs = pstm.getGeneratedKeys()) {
                     if(rs.next()) entity.setId(rs.getInt(1));
@@ -43,17 +45,17 @@ public class HospedeDao implements Idao<Hospede> {
     public void update(Hospede entity) {
         String sql = """
             UPDATE hospede
-            SET 
+            SET
                 hos_nome_completo = ?,
                 hos_cpf = ?,
                 hos_data_nascimento = ?,
                 hos_telefone = ?,
-                hos_email = ?    
+                hos_email = ?,
+                hos_status = ?
             WHERE hos_id = ?;
         """;
 
         try (var conn = SqliteConnection.getConnection()) {
-            conn.setAutoCommit(false);
             conn.setAutoCommit(false);
 
             enderecoDao.update(conn, entity.getEndereco());
@@ -63,7 +65,8 @@ public class HospedeDao implements Idao<Hospede> {
                 pstm.setDate(3, Date.valueOf(entity.getDataNascimento()));
                 pstm.setString(4, entity.getTelefone());
                 pstm.setString(5, entity.getEmail());
-                pstm.setInt(6, entity.getId());
+                pstm.setString(6, entity.getStatus().toString());
+                pstm.setInt(7, entity.getId());
                 pstm.executeUpdate();
             }
             conn.commit();
@@ -148,8 +151,10 @@ public class HospedeDao implements Idao<Hospede> {
 		Endereco endereco = new Endereco(rs.getInt("end_id"), rs.getString("end_cep"), 
 		rs.getString("end_logradouro"), rs.getString("end_cidade"), rs.getString("end_bairro"), rs.getString("end_numero"), rs.getString("end_complemento"), rs.getString("end_estado"));
         endereco.setHospedeId(rs.getInt("end_hos_id"));
+
+        HospedeStatus hospedeStatus = rs.getString("hos_status").equals(HospedeStatus.ATIVO.toString()) ? HospedeStatus.ATIVO : HospedeStatus.INATIVO;
 					
 		return new Hospede(rs.getInt("hos_id"), rs.getString("hos_nome_completo"), rs.getString("hos_cpf"), 
-		rs.getDate("hos_data_nascimento").toLocalDate(), rs.getString("hos_telefone"), rs.getString("hos_email"), endereco);
+		rs.getDate("hos_data_nascimento").toLocalDate(), rs.getString("hos_telefone"), rs.getString("hos_email"), endereco, hospedeStatus);
 	}
 }

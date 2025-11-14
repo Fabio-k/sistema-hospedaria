@@ -29,6 +29,7 @@ public class HospedeMapper
 		hospedeBuilder.setTelefone(updatedValue(hospede.getTelefone(), cmd.getTelefone()));
 		hospedeBuilder.setEmail(updatedValue(hospede.getEmail(), cmd.getEmail()));
 		hospedeBuilder.setEndereco(EnderecoMapper.update(hospede.getEndereco(), cmd.getEndereco()));
+		hospedeBuilder.setStatus(updatedValue(hospede.getStatus(), cmd.getStatus()));
 
 		return hospedeBuilder.criar();
 }

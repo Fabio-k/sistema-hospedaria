@@ -13,7 +13,7 @@ public class AtualizarStatusHospede {
 	}
 
 	public void execute(Integer id, String status){
-		List<String> validStatus = List.of("ativar", "desativar");
+		List<String> validStatus = List.of("ativar", "inativar");
 		if(status == null || !validStatus.contains(status)) throw new DomainException("Status inválido", 400);
 		HospedeStatus hospedeStatus = status.equals("ativar") ? HospedeStatus.ATIVO : HospedeStatus.INATIVO;
 		Hospede hospedeEncontrado = hospedeDao.findById(id).orElseThrow(() -> new DomainException("Hóspede não encontrado", 404));

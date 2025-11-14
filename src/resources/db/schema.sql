@@ -45,7 +45,8 @@ CREATE TABLE hospede (
 	hos_cpf VARCHAR(20) NOT NULL,
 	hos_data_nascimento DATE NOT NULL,
 	hos_telefone VARCHAR(20) NOT NULL,
-	hos_email VARCHAR(30) NOT NULL
+	hos_email VARCHAR(30) NOT NULL,
+	hos_status VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE endereco (

@@ -62,6 +62,7 @@ public class HospedeHttpHandler implements HttpHandler {
 				if(parts.length == 4){
 					String status = parts[3];
 					atualizarStatusHospede.execute(id, status);
+					exchange.sendResponseHeaders(204, -1);
 				}
 				if(parts.length == 3){
 					EditarHospedeCommand cmd = mapper.readValue(bodyStream, EditarHospedeCommand.class);

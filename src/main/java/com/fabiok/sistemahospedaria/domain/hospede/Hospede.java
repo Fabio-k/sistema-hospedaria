@@ -89,7 +89,7 @@ public class Hospede {
 
 	public void definirStatus(HospedeStatus status){
 		String statusMessage = this.status.toString().toLowerCase();
-		if(this.status == status) throw new DomainException("Status já está " + statusMessage , id);
+		if(this.status == status) throw new DomainException("Status já está " + statusMessage , 400);
 		this.status = status;
 	}
 
@@ -115,5 +115,9 @@ public class Hospede {
 
 	public void setId(Integer id){
 		this.id = id;
+	}
+
+	public HospedeStatus getStatus() {
+		return status;
 	}
 }
