@@ -15,6 +15,7 @@ import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarEmail;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
 import com.fabiok.sistemahospedaria.utils.ObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -29,6 +30,11 @@ public class HospedeHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
+		Headers headers = exchange.getResponseHeaders();
+		headers.add("Access-Control-Allow-Origin", "*");
+		headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+		headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+		headers.add("Content-Type", "application/json; charset=utf-8");
 		HospedeDao hospedeDao = new HospedeDao();
 		Notificacao notificacao = new Notificacao();
         CadastrarHospede cadastrarHospede = new CadastrarHospede(hospedeDao, List.of(
@@ -43,6 +49,10 @@ public class HospedeHttpHandler implements HttpHandler {
 		AtualizarStatusHospede atualizarStatusHospede = new AtualizarStatusHospede(hospedeDao);
 
 		try (InputStream bodyStream = exchange.getRequestBody()) {
+			if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+				exchange.sendResponseHeaders(204, -1);
+				return;
+			}
         	if(method.equalsIgnoreCase("POST")){
                 CadastrarHospedeCommand command = mapper.readValue(bodyStream, CadastrarHospedeCommand.class);
                 cadastrarHospede.execute(command);
