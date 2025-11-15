@@ -5,11 +5,7 @@ import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.command.EditarHospedeCommand;
 import com.fabiok.sistemahospedaria.domain.Notificacao;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
-import com.fabiok.sistemahospedaria.domain.hospede.AtualizarHospede;
-import com.fabiok.sistemahospedaria.domain.hospede.AtualizarStatusHospede;
-import com.fabiok.sistemahospedaria.domain.hospede.CadastrarHospede;
-import com.fabiok.sistemahospedaria.domain.hospede.ExcluirHospede;
-import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
+import com.fabiok.sistemahospedaria.domain.hospede.*;
 import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarCpf;
 import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarEmail;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
@@ -47,6 +43,7 @@ public class HospedeHttpHandler implements HttpHandler {
 		), notificacao);
 		ExcluirHospede excluirHospede = new ExcluirHospede(hospedeDao);
 		AtualizarStatusHospede atualizarStatusHospede = new AtualizarStatusHospede(hospedeDao);
+		BuscarHospede buscarHospede = new BuscarHospede(hospedeDao);
 
 		try (InputStream bodyStream = exchange.getRequestBody()) {
 			if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
@@ -60,10 +57,20 @@ public class HospedeHttpHandler implements HttpHandler {
 			}
         
 			if(method.equalsIgnoreCase("GET")){
-				List<Hospede> hospedes = hospedeDao.findAll();
-				var json = mapper.writeValueAsBytes(hospedes);
-				exchange.sendResponseHeaders(200, json.length);
-				exchange.getResponseBody().write(json);
+				String[] parts = exchange.getRequestURI().getPath().split("/");
+
+				if(parts.length == 3){
+					Integer id = Integer.parseInt(parts[2]);
+					Hospede hospede = buscarHospede.execute(id);
+					var json = mapper.writeValueAsBytes(hospede);
+					exchange.sendResponseHeaders(200, json.length);
+					exchange.getResponseBody().write(json);
+				}else{
+					List<Hospede> hospedes = hospedeDao.findAll();
+					var json = mapper.writeValueAsBytes(hospedes);
+					exchange.sendResponseHeaders(200, json.length);
+					exchange.getResponseBody().write(json);
+				}
 			}
 
 			if(method.equalsIgnoreCase("PATCH")){
