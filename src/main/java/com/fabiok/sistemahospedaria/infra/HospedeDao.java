@@ -1,6 +1,7 @@
 package com.fabiok.sistemahospedaria.infra;
 
 
+import com.fabiok.sistemahospedaria.application.dto.FiltroHospedeDto;
 import com.fabiok.sistemahospedaria.domain.Endereco;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 import com.fabiok.sistemahospedaria.domain.hospede.HospedeStatus;
@@ -112,9 +113,22 @@ public class HospedeDao implements Idao<Hospede> {
     }
 
 	@Override
-	public List<Hospede> findAll() {
-		String sql = "SELECT * FROM hospede h JOIN endereco e ON e.end_hos_id = h.hos_id;";
-        try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql);){
+	public List<Hospede> findAll(FiltroHospedeDto filtroHospedeDto) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT * FROM hospede h JOIN endereco e ON e.end_hos_id = h.hos_id WHERE 1=1 "
+        );
+
+        List<Object> params = new ArrayList<>();
+
+        if(filtroHospedeDto.nomeCompleto() != null && !filtroHospedeDto.nomeCompleto().isBlank()){
+            sql.append(" AND h.hos_nome_completo LIKE ? ");
+            params.add("%" + filtroHospedeDto.nomeCompleto() + "%");
+        }
+
+        try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql.toString());){
+            for(int i = 0; i < params.size(); i++){
+                psmt.setObject(i + 1, params.get(i));
+            }
             try(var rs = psmt.executeQuery()){
                 List<Hospede> hospedes = new ArrayList<>();
 				while (rs.next()) {

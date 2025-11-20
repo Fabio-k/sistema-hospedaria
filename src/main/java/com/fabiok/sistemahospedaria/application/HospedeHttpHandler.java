@@ -3,6 +3,7 @@ package com.fabiok.sistemahospedaria.application;
 import com.fabiok.sistemahospedaria.DomainException;
 import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.command.EditarHospedeCommand;
+import com.fabiok.sistemahospedaria.application.dto.FiltroHospedeDto;
 import com.fabiok.sistemahospedaria.domain.Notificacao;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
 import com.fabiok.sistemahospedaria.domain.hospede.*;
@@ -10,6 +11,7 @@ import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarCpf;
 import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarEmail;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
 import com.fabiok.sistemahospedaria.utils.ObjectMapperProvider;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -17,6 +19,9 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,14 +67,11 @@ public class HospedeHttpHandler implements HttpHandler {
 				if(parts.length == 3){
 					Integer id = Integer.parseInt(parts[2]);
 					Hospede hospede = buscarHospede.execute(id);
-					var json = mapper.writeValueAsBytes(hospede);
-					exchange.sendResponseHeaders(200, json.length);
-					exchange.getResponseBody().write(json);
+					gerarRespostaJson(hospede, exchange, 200);
 				}else{
-					List<Hospede> hospedes = hospedeDao.findAll();
-					var json = mapper.writeValueAsBytes(hospedes);
-					exchange.sendResponseHeaders(200, json.length);
-					exchange.getResponseBody().write(json);
+					FiltroHospedeDto filtroHospedeDto = mapper.convertValue(getQueryParam(exchange), FiltroHospedeDto.class);
+					List<Hospede> hospedes = hospedeDao.findAll(filtroHospedeDto);
+					gerarRespostaJson(hospedes, exchange, 200);
 				}
 			}
 
@@ -111,5 +113,28 @@ public class HospedeHttpHandler implements HttpHandler {
 			exchange.getResponseBody().close();
 		}
 	}
-    
+
+	public void gerarRespostaJson(Object entity, HttpExchange exchange, Integer status) throws JsonProcessingException, IOException {
+		var json = mapper.writeValueAsBytes(entity);
+		exchange.sendResponseHeaders(status, json.length);
+		exchange.getResponseBody().write(json);
+	}
+
+	public Map<String, String> getQueryParam(HttpExchange httpExchange){
+		String query = httpExchange.getRequestURI().getQuery();
+		Map<String, String> params = new HashMap<>();
+
+		if(query == null || query.isBlank()){
+			return params;
+		}
+
+		for(String param : query.split("&")){
+			String[] pair = param.split("=");
+			String key = URLDecoder.decode(pair[0], StandardCharsets.UTF_8);
+			String value = URLDecoder.decode(pair[1], StandardCharsets.UTF_8);
+			params.put(key,value);
+		}
+
+		return params;
+	}
 }
