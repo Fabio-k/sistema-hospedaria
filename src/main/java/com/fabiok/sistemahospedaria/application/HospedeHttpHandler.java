@@ -31,11 +31,7 @@ public class HospedeHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
-		Headers headers = exchange.getResponseHeaders();
-		headers.add("Access-Control-Allow-Origin", "*");
-		headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-		headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-		headers.add("Content-Type", "application/json; charset=utf-8");
+		generateCorsHeaders(exchange);
 		HospedeDao hospedeDao = new HospedeDao();
 		Notificacao notificacao = new Notificacao();
         CadastrarHospede cadastrarHospede = new CadastrarHospede(hospedeDao, List.of(
@@ -114,6 +110,14 @@ public class HospedeHttpHandler implements HttpHandler {
 		}
 	}
 
+	public void generateCorsHeaders(HttpExchange exchange){
+		Headers headers = exchange.getResponseHeaders();
+		headers.add("Access-Control-Allow-Origin", "*");
+		headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+		headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+		headers.add("Content-Type", "application/json; charset=utf-8");
+	}
+
 	public void gerarRespostaJson(Object entity, HttpExchange exchange, Integer status) throws JsonProcessingException, IOException {
 		var json = mapper.writeValueAsBytes(entity);
 		exchange.sendResponseHeaders(status, json.length);
@@ -130,6 +134,7 @@ public class HospedeHttpHandler implements HttpHandler {
 
 		for(String param : query.split("&")){
 			String[] pair = param.split("=");
+			if(pair.length != 2) continue;
 			String key = URLDecoder.decode(pair[0], StandardCharsets.UTF_8);
 			String value = URLDecoder.decode(pair[1], StandardCharsets.UTF_8);
 			params.put(key,value);
