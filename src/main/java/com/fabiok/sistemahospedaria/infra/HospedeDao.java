@@ -9,6 +9,7 @@ import com.fabiok.sistemahospedaria.domain.hospede.HospedeStatus;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -120,13 +121,33 @@ public class HospedeDao implements Idao<Hospede> {
 
         List<Object> params = new ArrayList<>();
 
-        if(filtroHospedeDto.nomeCompleto() != null && !filtroHospedeDto.nomeCompleto().isBlank()){
-            sql.append(" AND h.hos_nome_completo LIKE ? ");
-            params.add("%" + filtroHospedeDto.nomeCompleto() + "%");
+        if(filtroHospedeDto.termo() != null && !filtroHospedeDto.termo().isBlank()){
+            sql.append(" AND (h.hos_nome_completo LIKE ? ");
+            sql.append(" OR h.hos_email LIKE ? ");
+            sql.append(" OR h.hos_cpf LIKE ? ");
+            sql.append(" OR h.hos_telefone LIKE ?) ");
+            params.add("%" + filtroHospedeDto.termo() + "%");
+            params.add("%" + filtroHospedeDto.termo() + "%");
+            params.add("%" + filtroHospedeDto.termo() + "%");
+            params.add("%" + filtroHospedeDto.termo() + "%");
+        }
+
+        if(filtroHospedeDto.minIdade() != null){
+            sql.append(" AND h.hos_data_nascimento <= ? ");
+            params.add(Date.valueOf(LocalDate.now().minusYears(filtroHospedeDto.minIdade())));
+        }
+
+        if(filtroHospedeDto.maxIdade() != null){
+            sql.append(" AND h.hos_data_nascimento >= ? ");
+            params.add(Date.valueOf(LocalDate.now().minusYears(filtroHospedeDto.maxIdade())));
         }
 
         try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql.toString());){
             for(int i = 0; i < params.size(); i++){
+                if(params.get(i) instanceof Date){
+                    psmt.setDate(i+ 1, (Date) params.get(i));
+                    continue;
+                }
                 psmt.setObject(i + 1, params.get(i));
             }
             try(var rs = psmt.executeQuery()){
