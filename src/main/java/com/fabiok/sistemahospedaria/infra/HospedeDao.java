@@ -10,9 +10,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 public class HospedeDao implements Idao<Hospede> {
@@ -140,6 +138,13 @@ public class HospedeDao implements Idao<Hospede> {
         if(filtroHospedeDto.maxIdade() != null){
             sql.append(" AND h.hos_data_nascimento >= ? ");
             params.add(Date.valueOf(LocalDate.now().minusYears(filtroHospedeDto.maxIdade())));
+        }
+
+        if(filtroHospedeDto.status() != null){
+            String[] statusList = filtroHospedeDto.status().split(",");
+            String placeholders = String.join(",", Collections.nCopies(statusList.length, "?"));
+            sql.append(" AND h.hos_status IN (").append(placeholders).append(")");
+            params.addAll(Arrays.asList(statusList));
         }
 
         try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql.toString());){
