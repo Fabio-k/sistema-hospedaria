@@ -4,6 +4,7 @@ import com.fabiok.sistemahospedaria.DomainException;
 import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.command.EditarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.dto.FiltroHospedeDto;
+import com.fabiok.sistemahospedaria.application.dto.PageResponse;
 import com.fabiok.sistemahospedaria.domain.Notificacao;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
 import com.fabiok.sistemahospedaria.domain.hospede.*;
@@ -66,7 +67,7 @@ public class HospedeHttpHandler implements HttpHandler {
 					gerarRespostaJson(hospede, exchange, 200);
 				}else{
 					FiltroHospedeDto filtroHospedeDto = mapper.convertValue(getQueryParam(exchange), FiltroHospedeDto.class);
-					List<Hospede> hospedes = hospedeDao.findAll(filtroHospedeDto);
+				    PageResponse<Hospede> hospedes = hospedeDao.findAll(filtroHospedeDto);
 					gerarRespostaJson(hospedes, exchange, 200);
 				}
 			}

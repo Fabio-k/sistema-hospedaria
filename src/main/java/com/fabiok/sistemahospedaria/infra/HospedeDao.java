@@ -2,6 +2,7 @@ package com.fabiok.sistemahospedaria.infra;
 
 
 import com.fabiok.sistemahospedaria.application.dto.FiltroHospedeDto;
+import com.fabiok.sistemahospedaria.application.dto.PageResponse;
 import com.fabiok.sistemahospedaria.domain.Endereco;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 import com.fabiok.sistemahospedaria.domain.hospede.HospedeStatus;
@@ -112,18 +113,18 @@ public class HospedeDao implements Idao<Hospede> {
     }
 
 	@Override
-	public List<Hospede> findAll(FiltroHospedeDto filtroHospedeDto) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT * FROM hospede h JOIN endereco e ON e.end_hos_id = h.hos_id WHERE 1=1 "
+	public PageResponse<Hospede> findAll(FiltroHospedeDto filtroHospedeDto) {
+        StringBuilder whereString = new StringBuilder(
+                " WHERE 1=1 "
         );
 
         List<Object> params = new ArrayList<>();
 
         if(filtroHospedeDto.termo() != null && !filtroHospedeDto.termo().isBlank()){
-            sql.append(" AND (h.hos_nome_completo LIKE ? ");
-            sql.append(" OR h.hos_email LIKE ? ");
-            sql.append(" OR h.hos_cpf LIKE ? ");
-            sql.append(" OR h.hos_telefone LIKE ?) ");
+            whereString.append(" AND (h.hos_nome_completo LIKE ? ");
+            whereString.append(" OR h.hos_email LIKE ? ");
+            whereString.append(" OR h.hos_cpf LIKE ? ");
+            whereString.append(" OR h.hos_telefone LIKE ?) ");
             params.add("%" + filtroHospedeDto.termo() + "%");
             params.add("%" + filtroHospedeDto.termo() + "%");
             params.add("%" + filtroHospedeDto.termo() + "%");
@@ -131,23 +132,39 @@ public class HospedeDao implements Idao<Hospede> {
         }
 
         if(filtroHospedeDto.minIdade() != null){
-            sql.append(" AND h.hos_data_nascimento <= ? ");
+            whereString.append(" AND h.hos_data_nascimento <= ? ");
             params.add(Date.valueOf(LocalDate.now().minusYears(filtroHospedeDto.minIdade())));
         }
 
         if(filtroHospedeDto.maxIdade() != null){
-            sql.append(" AND h.hos_data_nascimento >= ? ");
+            whereString.append(" AND h.hos_data_nascimento >= ? ");
             params.add(Date.valueOf(LocalDate.now().minusYears(filtroHospedeDto.maxIdade())));
         }
 
         if(filtroHospedeDto.status() != null){
             String[] statusList = filtroHospedeDto.status().split(",");
             String placeholders = String.join(",", Collections.nCopies(statusList.length, "?"));
-            sql.append(" AND h.hos_status IN (").append(placeholders).append(")");
+            whereString.append(" AND h.hos_status IN (").append(placeholders).append(")");
             params.addAll(Arrays.asList(statusList));
         }
 
-        try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql.toString());){
+        int size = filtroHospedeDto.size() != null && filtroHospedeDto.size() > 0
+                ? filtroHospedeDto.size()
+                : 10;
+
+        int page = filtroHospedeDto.page() != null && filtroHospedeDto.page() > 0
+                ? filtroHospedeDto.page()
+                : 1;
+
+        int offset = (page - 1) * size;
+
+        String sql = "SELECT * FROM hospede h JOIN endereco e ON e.end_hos_id = h.hos_id " + whereString.toString() + " ORDER BY UPPER(hos_nome_completo) LIMIT ? OFFSET ? ";
+
+        try (var conn = SqliteConnection.getConnection(); var psmt = conn.prepareStatement(sql);){
+            Integer totalCount = getSize(whereString, params);
+            params.add(size);
+            params.add(offset);
+
             for(int i = 0; i < params.size(); i++){
                 if(params.get(i) instanceof Date){
                     psmt.setDate(i+ 1, (Date) params.get(i));
@@ -160,11 +177,16 @@ public class HospedeDao implements Idao<Hospede> {
 				while (rs.next()) {
 					hospedes.add(gerarHospede(rs));
 				}
-				return hospedes;
+
+                int totalPages = (int) Math.ceil((double) totalCount / size);
+				return new PageResponse<Hospede>(hospedes, page, size,
+                        totalCount, totalPages,
+                        page < totalPages,
+                        page > 1);
             }
         }catch (SQLException e){
             e.printStackTrace();
-            return List.of();
+            return null;
         }
 	}
 
@@ -197,4 +219,24 @@ public class HospedeDao implements Idao<Hospede> {
 		return new Hospede(rs.getInt("hos_id"), rs.getString("hos_nome_completo"), rs.getString("hos_cpf"), 
 		rs.getDate("hos_data_nascimento").toLocalDate(), rs.getString("hos_telefone"), rs.getString("hos_email"), endereco, hospedeStatus);
 	}
+
+    private Integer getSize(StringBuilder whereString, List<Object> params) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM hospede h " + whereString.toString();
+
+        try (var conn = SqliteConnection.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            for(int i = 0; i < params.size(); i++){
+                if(params.get(i) instanceof Date){
+                    stmt.setDate(i+ 1, (Date) params.get(i));
+                    continue;
+                }
+                stmt.setObject(i + 1, params.get(i));
+            }
+            var rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
 }

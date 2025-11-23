@@ -5,28 +5,29 @@ meta {
 }
 
 patch {
-  url: http://localhost:8080/hospede/1
+  url: http://localhost:8080/hospede/13
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "nomeCompleto" :  "joão",
-    "cpf" : "52352283833",
-    "dataNascimento": "2004-07-23",
-    "telefone": "11950663110",
-    "email": "fabio@email.com",
-    "status": "INATIVO",
-    "endereco" : {
-      "logradouro": "avenida josé benedito braga",
-      "bairro": "Mogilar",
-      "complemento": "casa",
-      "numero": "119",
-      "cidade": "mogi",
-      "estado": "são paulo",
-      "cep": "54354334"
-    }
+      "nomeCompleto": "Kazuhiro",
+      "cpf": "33333333333",
+      "dataNascimento": "2008-11-25",
+      "telefone": "11950663110",
+      "email": "fabiokmain@gmail.com",
+      "status": "INATIVO",
+      "endereco": {
+        "id": 13,
+        "cep": "08773020",
+        "logradouro": "teste",
+        "cidade": "Mogi das Cruzes",
+        "bairro": "Mogilar",
+        "numero": "123",
+        "complemento": "x",
+        "estado": "São Paulo"
+      }
   }
 }
 

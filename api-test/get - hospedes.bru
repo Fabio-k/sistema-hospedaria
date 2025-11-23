@@ -5,9 +5,17 @@ meta {
 }
 
 get {
-  url: http://localhost:8080/hospede
+  url: http://localhost:8080/hospede?termo=&minIdade=20&maxIdade=80&status=ATIVO,INATIVO&page=2
   body: none
   auth: inherit
+}
+
+params:query {
+  termo: 
+  minIdade: 20
+  maxIdade: 80
+  status: ATIVO,INATIVO
+  page: 2
 }
 
 settings {
