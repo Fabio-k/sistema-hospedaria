@@ -2,6 +2,7 @@ package com.fabiok.sistemahospedaria.domain.hospede.validacoes;
 
 import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
 import com.fabiok.sistemahospedaria.domain.Notificacao;
+import com.fabiok.sistemahospedaria.domain.exceptions.FieldErrorCode;
 import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 
 public class ValidarEmail implements IStrategyValidacaoHospede{
@@ -12,7 +13,8 @@ public class ValidarEmail implements IStrategyValidacaoHospede{
 
 		boolean isFormatoValido = hospede.getEmail().matches("^\\w+@\\w+\\.\\w+$");
 		if(!isFormatoValido){
-			erroHandler.addErros("E-mail está em um formato inválido");
+		erroHandler.addErros(new FieldErrorCode("email", "email.formatoInvalido"));
+
 		}
 	}
 	

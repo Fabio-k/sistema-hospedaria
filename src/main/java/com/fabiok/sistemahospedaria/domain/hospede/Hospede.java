@@ -4,6 +4,7 @@ import com.fabiok.sistemahospedaria.DomainException;
 import com.fabiok.sistemahospedaria.domain.Cpf;
 import com.fabiok.sistemahospedaria.domain.Endereco;
 import com.fabiok.sistemahospedaria.domain.Notificacao;
+import com.fabiok.sistemahospedaria.domain.exceptions.FieldErrorCode;
 import com.fabiok.sistemahospedaria.utils.FieldToBeValidated;
 import com.fabiok.sistemahospedaria.utils.ValidarNullOuEmpty;
 
@@ -46,7 +47,7 @@ public class Hospede {
 
 	public void validar(Notificacao notificacao){
 		validarDadosObrigatorios(notificacao);
-		if(cpf != null){
+		if(cpf != null && !cpf.getValor().isBlank()){
 			cpf.validar(notificacao);
 		}
 		
@@ -54,25 +55,24 @@ public class Hospede {
 
 	public void validarDadosObrigatorios(Notificacao notificacao){
 		List<FieldToBeValidated> fieldsToValidate = new ArrayList<>();
-		fieldsToValidate.add(new FieldToBeValidated("cpf", "CPF", cpf != null ? cpf.getValor() : null));
-		fieldsToValidate.add(new FieldToBeValidated("email", "E-mail", email));
-		fieldsToValidate.add(new FieldToBeValidated("telefone", "Telefone", telefone));
-		fieldsToValidate.add(new FieldToBeValidated("nomeCompleto", "Nome completo", nomeCompleto));
+		fieldsToValidate.add(new FieldToBeValidated("cpf", cpf != null ? cpf.getValor() : null));
+		fieldsToValidate.add(new FieldToBeValidated("email", email));
+		fieldsToValidate.add(new FieldToBeValidated("telefone", telefone));
+		fieldsToValidate.add(new FieldToBeValidated("nomeCompleto", nomeCompleto));
 
 		if (endereco != null) {
-			fieldsToValidate.add(new FieldToBeValidated("cep", "CEP", endereco.getCep()));
-			fieldsToValidate.add(new FieldToBeValidated("cidade", "Cidade", endereco.getCidade()));
-			fieldsToValidate.add(new FieldToBeValidated("complemento", "Complemento", endereco.getComplemento()));
-			fieldsToValidate.add(new FieldToBeValidated("bairro", "Bairro", endereco.getBairro()));
-			fieldsToValidate.add(new FieldToBeValidated("estado", "Estado", endereco.getEstado()));
-			fieldsToValidate.add(new FieldToBeValidated("numero", "Número", endereco.getNumero()));
-			fieldsToValidate.add(new FieldToBeValidated("logradouro", "Logradouro", endereco.getLogradouro()));
+			fieldsToValidate.add(new FieldToBeValidated("endereco.cep", endereco.getCep()));
+			fieldsToValidate.add(new FieldToBeValidated("endereco.cidade", endereco.getCidade()));
+			fieldsToValidate.add(new FieldToBeValidated("endereco.complemento", endereco.getComplemento()));
+			fieldsToValidate.add(new FieldToBeValidated("endereco.bairro", endereco.getBairro()));
+			fieldsToValidate.add(new FieldToBeValidated("endereco.estado", endereco.getEstado()));
+			fieldsToValidate.add(new FieldToBeValidated("endereco.numero", endereco.getNumero()));
+			fieldsToValidate.add(new FieldToBeValidated("endereco.logradouro", endereco.getLogradouro()));
 		}
 
 		ValidarNullOuEmpty.validar(notificacao, fieldsToValidate);
 
-		if(dataNascimento == null) notificacao.addErros("Data de nascimento");
-		if(endereco == null) notificacao.addErros(ValidarNullOuEmpty.erroMessage("Endereço"));
+		if(dataNascimento == null) notificacao.addErros(new FieldErrorCode("dataNascimento", ValidarNullOuEmpty.erroMessage("dataNascimento")));
 	}
 
 	public Integer getId() {

@@ -3,14 +3,14 @@ package com.fabiok.sistemahospedaria.domain.exceptions;
 import java.util.List;
 
 public class ValidationException extends RuntimeException{
-    private final List<String> erros;
+    private final List<FieldErrorCode> erros;
 
-    public ValidationException(List<String> erros){
+    public ValidationException(List<FieldErrorCode> erros){
         super("Erro de validação");
          this.erros = erros;
     }
 
-    public List<String> getErros(){
+    public List<FieldErrorCode> getErros(){
         return erros;
     }
 }

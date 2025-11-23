@@ -1,16 +1,18 @@
 package com.fabiok.sistemahospedaria.domain;
 
+import com.fabiok.sistemahospedaria.domain.exceptions.FieldErrorCode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Notificacao {
-    private final List<String> erros = new ArrayList<>();
+    private final List<FieldErrorCode> erros = new ArrayList<>();
 
-    public void addErros(String mensagemErro){
-        erros.add(mensagemErro);
+    public void addErros(FieldErrorCode fieldErrorCode){
+        erros.add(fieldErrorCode);
     }
 
-    public List<String> getErros(){
+    public List<FieldErrorCode> getErros(){
         return List.copyOf(erros);
     }
 

@@ -1,5 +1,6 @@
 package com.fabiok.sistemahospedaria.domain;
 
+import com.fabiok.sistemahospedaria.domain.exceptions.FieldErrorCode;
 import com.fabiok.sistemahospedaria.utils.ValidadorCpf;
 
 public class Cpf {
@@ -10,7 +11,7 @@ public class Cpf {
     }
 
     public void validar(Notificacao notification){
-        if(!ValidadorCpf.validar(valor)) notification.addErros("CPF inválido");
+        if(!ValidadorCpf.validar(valor)) notification.addErros(new FieldErrorCode("cpf", "cpf.formatoInvalido"));
     }
 
     public String getValor() { return valor; }
