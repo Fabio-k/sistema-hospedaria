@@ -1,8 +1,8 @@
 package com.fabiok.sistemahospedaria.application;
 
 import com.fabiok.sistemahospedaria.DomainException;
+import com.fabiok.sistemahospedaria.application.command.AtualizarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.command.CadastrarHospedeCommand;
-import com.fabiok.sistemahospedaria.application.command.EditarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.dto.FiltroHospedeDto;
 import com.fabiok.sistemahospedaria.application.dto.PageResponse;
 import com.fabiok.sistemahospedaria.domain.Notificacao;
@@ -54,7 +54,7 @@ public class HospedeHttpHandler implements HttpHandler {
 			}
         	if(method.equalsIgnoreCase("POST")){
                 CadastrarHospedeCommand command = mapper.readValue(bodyStream, CadastrarHospedeCommand.class);
-                cadastrarHospede.execute(command);
+                cadastrarHospede.executar(command);
                 exchange.sendResponseHeaders(201, -1);
 			}
         
@@ -63,7 +63,7 @@ public class HospedeHttpHandler implements HttpHandler {
 
 				if(parts.length == 3){
 					Integer id = Integer.parseInt(parts[2]);
-					Hospede hospede = buscarHospede.execute(id);
+					Hospede hospede = buscarHospede.executar(id);
 					gerarRespostaJson(hospede, exchange, 200);
 				}else{
 					FiltroHospedeDto filtroHospedeDto = mapper.convertValue(getQueryParam(exchange), FiltroHospedeDto.class);
@@ -77,12 +77,12 @@ public class HospedeHttpHandler implements HttpHandler {
 				Integer id = Integer.parseInt(parts[2]);
 				if(parts.length == 4){
 					String status = parts[3];
-					atualizarStatusHospede.execute(id, status);
+					atualizarStatusHospede.executar(id, status);
 					exchange.sendResponseHeaders(204, -1);
 				}
 				if(parts.length == 3){
-					EditarHospedeCommand cmd = mapper.readValue(bodyStream, EditarHospedeCommand.class);
-					atualizarHospede.execute(id, cmd);
+				    AtualizarHospedeCommand cmd = mapper.readValue(bodyStream, AtualizarHospedeCommand.class);
+					atualizarHospede.executar(id, cmd);
 					exchange.sendResponseHeaders(204, -1);
 				}
 			}
@@ -91,7 +91,7 @@ public class HospedeHttpHandler implements HttpHandler {
 				String[] parts = exchange.getRequestURI().getPath().split("/");
 				if(parts.length == 3) {
 					Integer id = Integer.parseInt(parts[2]);
-					excluirHospede.execute(id);
+					excluirHospede.executar(id);
 					exchange.sendResponseHeaders(204, -1);
 				}
 			}

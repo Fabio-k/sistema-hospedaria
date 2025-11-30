@@ -10,7 +10,7 @@ public class BuscarHospede {
         this.hospedeDao = hospedeDao;
     }
 
-    public Hospede execute(Integer id){
+    public Hospede executar(Integer id){
         return hospedeDao.findById(id).orElseThrow(() -> new DomainException("Hóspede não encontrado", 404));
     }
 }

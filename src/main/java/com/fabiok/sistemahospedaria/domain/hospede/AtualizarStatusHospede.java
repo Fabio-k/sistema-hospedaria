@@ -12,7 +12,7 @@ public class AtualizarStatusHospede {
 		this.hospedeDao = hospedeDao;
 	}
 
-	public void execute(Integer id, String status){
+	public void executar(Integer id, String status){
 		List<String> validStatus = List.of("ativar", "inativar");
 		if(status == null || !validStatus.contains(status)) throw new DomainException("Status inválido", 400);
 		HospedeStatus hospedeStatus = status.equals("ativar") ? HospedeStatus.ATIVO : HospedeStatus.INATIVO;

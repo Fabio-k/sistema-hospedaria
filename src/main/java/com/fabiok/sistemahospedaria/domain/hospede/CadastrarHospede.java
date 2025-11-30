@@ -20,7 +20,7 @@ public class CadastrarHospede {
 		this.notificacao = notificacao;
 	}
 
-	public void execute(CadastrarHospedeCommand command){
+	public void executar(CadastrarHospedeCommand command){
         Hospede hospede = HospedeMapper.from(command);
         validacoes.forEach(v -> v.executar(hospede, notificacao));
         hospede.validar(notificacao);

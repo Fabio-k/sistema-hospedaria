@@ -1,12 +1,11 @@
 package com.fabiok.sistemahospedaria.domain.hospede;
 
 import com.fabiok.sistemahospedaria.DomainException;
-import com.fabiok.sistemahospedaria.application.command.EditarHospedeCommand;
+import com.fabiok.sistemahospedaria.application.command.AtualizarHospedeCommand;
 import com.fabiok.sistemahospedaria.application.mapper.HospedeMapper;
 import com.fabiok.sistemahospedaria.domain.Notificacao;
 import com.fabiok.sistemahospedaria.domain.exceptions.ValidationException;
 import com.fabiok.sistemahospedaria.domain.hospede.validacoes.IStrategyValidacaoHospede;
-import com.fabiok.sistemahospedaria.infra.HospedeDao;
 import com.fabiok.sistemahospedaria.infra.Idao;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class AtualizarHospede {
 		this.notificacao = notificacao;
 	}
 
-	public void execute(Integer id, EditarHospedeCommand command){
+	public void executar(Integer id, AtualizarHospedeCommand command){
 		Hospede hospedeEncontrado = hospedeDao.findById(id).orElseThrow(() -> new DomainException("Hóspede não encontrado", 404));
 		Hospede hospede = HospedeMapper.update(hospedeEncontrado, command);
 		validacoes.forEach(v -> v.executar(hospede, notificacao));

@@ -10,7 +10,7 @@ public class ExcluirHospede {
 		this.hospedeDao = hospedeDao;
 	}
 
-	public void execute(Integer id){
+	public void executar(Integer id){
         Hospede hospede = hospedeDao.findById(id).orElseThrow(() -> new DomainException("Hóspede não encontrado", 404));
         hospedeDao.delete(hospede.getId());
     }
