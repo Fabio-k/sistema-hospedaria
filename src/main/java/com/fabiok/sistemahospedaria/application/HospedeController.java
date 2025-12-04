@@ -11,6 +11,7 @@ import com.fabiok.sistemahospedaria.domain.hospede.*;
 import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarCpf;
 import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarEmail;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
+import com.fabiok.sistemahospedaria.infra.HospedePostgresDao;
 import com.fabiok.sistemahospedaria.utils.ObjectMapperProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,21 +27,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HospedeHttpHandler implements HttpHandler {
+public class HospedeController implements HttpHandler {
     private static ObjectMapper mapper = ObjectMapperProvider.getMapper();
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
 		generateCorsHeaders(exchange);
-		HospedeDao hospedeDao = new HospedeDao();
+		HospedeDao hospedeDao = new HospedePostgresDao();
 		Notificacao notificacao = new Notificacao();
         CadastrarHospede cadastrarHospede = new CadastrarHospede(hospedeDao, List.of(
-			new ValidarCpf(),
+			new ValidarCpf(hospedeDao),
 			new ValidarEmail()
 		), notificacao);
 		AtualizarHospede atualizarHospede = new AtualizarHospede(hospedeDao, List.of(
-			new ValidarCpf(),
+			new ValidarCpf(hospedeDao),
 			new ValidarEmail()
 		), notificacao);
 		ExcluirHospede excluirHospede = new ExcluirHospede(hospedeDao);

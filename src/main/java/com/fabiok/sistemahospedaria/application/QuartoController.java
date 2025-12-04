@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-public class QuartoHttpHandler implements HttpHandler
+public class QuartoController implements HttpHandler
 {
 	private static final ObjectMapper mapper = new ObjectMapper();
 
