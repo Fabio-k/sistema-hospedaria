@@ -123,10 +123,11 @@ public class HospedePostgresDao implements HospedeDao {
         List<Object> params = new ArrayList<>();
 
         if(filtroHospedeDto.termo() != null && !filtroHospedeDto.termo().isBlank()){
-            whereString.append(" AND (h.hos_nome_completo ILIKE ? ");
+            whereString.append(" AND (similarity(unaccent(lower(hos_nome_completo)), unaccent(lower(?))) > 0.09 OR unaccent(h.hos_nome_completo) ILIKE ?");
             whereString.append(" OR h.hos_email LIKE ? ");
             whereString.append(" OR h.hos_cpf LIKE ? ");
             whereString.append(" OR h.hos_telefone LIKE ?) ");
+            params.add(filtroHospedeDto.termo());
             params.add("%" + filtroHospedeDto.termo() + "%");
             params.add("%" + filtroHospedeDto.termo() + "%");
             params.add("%" + filtroHospedeDto.termo() + "%");
@@ -160,10 +161,11 @@ public class HospedePostgresDao implements HospedeDao {
 
         int offset = (page - 1) * size;
 
-        String sql = "SELECT * FROM hospede h JOIN endereco e ON e.end_hos_id = h.hos_id " + whereString.toString() + " ORDER BY UPPER(hos_nome_completo) LIMIT ? OFFSET ? ";
+        String sql = "SELECT * FROM hospede h JOIN endereco e ON e.end_hos_id = h.hos_id " + whereString.toString() + " ORDER BY similarity(unaccent(hos_nome_completo), unaccent(?)) DESC LIMIT ? OFFSET ? ";
 
         try (var conn = PostgresConnection.getConnection(); var psmt = conn.prepareStatement(sql);){
             Integer totalCount = getSize(whereString, params);
+            params.add(filtroHospedeDto.termo());
             params.add(size);
             params.add(offset);
 
