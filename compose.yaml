@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - sistema_hospedaria_pg_data:/var/lib/postgresql/data
+      - ./src/resources/db/postgres:/docker-entrypoint-initdb.d/
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.7
+    command:
+      - start-dev
+    env_file:
+      - .env
+    ports:
+       - "8081:8080"
+    volumes:
+      - ./themes:/opt/keycloak/providers/
+volumes:
+  sistema_hospedaria_pg_data:

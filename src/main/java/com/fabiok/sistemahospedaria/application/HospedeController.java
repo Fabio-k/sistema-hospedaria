@@ -12,10 +12,11 @@ import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarCpf;
 import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarEmail;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
 import com.fabiok.sistemahospedaria.infra.HospedePostgresDao;
+import com.fabiok.sistemahospedaria.infra.HospedeSqliteDao;
+import com.fabiok.sistemahospedaria.service.AuthorizationService;
 import com.fabiok.sistemahospedaria.utils.ObjectMapperProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -32,9 +33,10 @@ public class HospedeController implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+		AuthorizationService authorizationService = new AuthorizationService(exchange);
+
         String method = exchange.getRequestMethod();
-		generateCorsHeaders(exchange);
-		HospedeDao hospedeDao = new HospedePostgresDao();
+		HospedeDao hospedeDao = authorizationService.getRoles().contains("db:sqlite") ? new HospedeSqliteDao() : new HospedePostgresDao();
 		Notificacao notificacao = new Notificacao();
         CadastrarHospede cadastrarHospede = new CadastrarHospede(hospedeDao, List.of(
 			new ValidarCpf(hospedeDao),
@@ -48,11 +50,9 @@ public class HospedeController implements HttpHandler {
 		AtualizarStatusHospede atualizarStatusHospede = new AtualizarStatusHospede(hospedeDao);
 		BuscarHospede buscarHospede = new BuscarHospede(hospedeDao);
 
+
+
 		try (InputStream bodyStream = exchange.getRequestBody()) {
-			if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
-				exchange.sendResponseHeaders(204, -1);
-				return;
-			}
         	if(method.equalsIgnoreCase("POST")){
                 CadastrarHospedeCommand command = mapper.readValue(bodyStream, CadastrarHospedeCommand.class);
                 cadastrarHospede.executar(command);
@@ -77,11 +77,13 @@ public class HospedeController implements HttpHandler {
 				String[] parts = exchange.getRequestURI().getPath().split("/");
 				Integer id = Integer.parseInt(parts[2]);
 				if(parts.length == 4){
+					authorizationService.validateAccess(List.of("hospede:status"));
 					String status = parts[3];
 					atualizarStatusHospede.executar(id, status);
 					exchange.sendResponseHeaders(204, -1);
 				}
 				if(parts.length == 3){
+					authorizationService.validateAccess(List.of("hospede:edit"));
 				    AtualizarHospedeCommand cmd = mapper.readValue(bodyStream, AtualizarHospedeCommand.class);
 					atualizarHospede.executar(id, cmd);
 					exchange.sendResponseHeaders(204, -1);
@@ -89,6 +91,7 @@ public class HospedeController implements HttpHandler {
 			}
 
 			if(method.equalsIgnoreCase("DELETE")){
+				authorizationService.validateAccess(List.of("hospede:delete"));
 				String[] parts = exchange.getRequestURI().getPath().split("/");
 				if(parts.length == 3) {
 					Integer id = Integer.parseInt(parts[2]);
@@ -110,14 +113,6 @@ public class HospedeController implements HttpHandler {
 		} finally {
 			exchange.getResponseBody().close();
 		}
-	}
-
-	public void generateCorsHeaders(HttpExchange exchange){
-		Headers headers = exchange.getResponseHeaders();
-		headers.add("Access-Control-Allow-Origin", "*");
-		headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-		headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-		headers.add("Content-Type", "application/json; charset=utf-8");
 	}
 
 	public void gerarRespostaJson(Object entity, HttpExchange exchange, Integer status) throws JsonProcessingException, IOException {
