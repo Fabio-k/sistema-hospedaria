@@ -13,7 +13,7 @@ import com.fabiok.sistemahospedaria.domain.hospede.validacoes.ValidarEmail;
 import com.fabiok.sistemahospedaria.infra.HospedeDao;
 import com.fabiok.sistemahospedaria.infra.HospedePostgresDao;
 import com.fabiok.sistemahospedaria.infra.HospedeSqliteDao;
-import com.fabiok.sistemahospedaria.service.AuthorizationService;
+import com.fabiok.sistemahospedaria.service.AutorizacaoService;
 import com.fabiok.sistemahospedaria.utils.ObjectMapperProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +33,7 @@ public class HospedeController implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-		AuthorizationService authorizationService = new AuthorizationService(exchange);
+		AutorizacaoService authorizationService = new AutorizacaoService(exchange);
 
         String method = exchange.getRequestMethod();
 		HospedeDao hospedeDao = authorizationService.getRoles().contains("db:sqlite") ? new HospedeSqliteDao() : new HospedePostgresDao();
@@ -77,13 +77,13 @@ public class HospedeController implements HttpHandler {
 				String[] parts = exchange.getRequestURI().getPath().split("/");
 				Integer id = Integer.parseInt(parts[2]);
 				if(parts.length == 4){
-					authorizationService.validateAccess(List.of("hospede:status"));
+					authorizationService.validarAcesso(List.of("hospede:status"));
 					String status = parts[3];
 					atualizarStatusHospede.executar(id, status);
 					exchange.sendResponseHeaders(204, -1);
 				}
 				if(parts.length == 3){
-					authorizationService.validateAccess(List.of("hospede:edit"));
+					authorizationService.validarAcesso(List.of("hospede:edit"));
 				    AtualizarHospedeCommand cmd = mapper.readValue(bodyStream, AtualizarHospedeCommand.class);
 					atualizarHospede.executar(id, cmd);
 					exchange.sendResponseHeaders(204, -1);
@@ -91,7 +91,7 @@ public class HospedeController implements HttpHandler {
 			}
 
 			if(method.equalsIgnoreCase("DELETE")){
-				authorizationService.validateAccess(List.of("hospede:delete"));
+				authorizationService.validarAcesso(List.of("hospede:delete"));
 				String[] parts = exchange.getRequestURI().getPath().split("/");
 				if(parts.length == 3) {
 					Integer id = Integer.parseInt(parts[2]);
