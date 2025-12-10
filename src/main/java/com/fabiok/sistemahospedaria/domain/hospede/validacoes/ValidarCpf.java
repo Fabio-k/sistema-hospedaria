@@ -16,10 +16,10 @@ public class ValidarCpf implements IStrategyValidacaoHospede{
 
     @Override
     public void executar(Hospede hospede, Notificacao erroHandler) {
-		if(hospede.getCpf() == null || hospede.getCpf().isEmpty()) return;
+		if(hospede.getEmail() == null || hospede.getEmail().isEmpty()) return;
 
-		boolean isCpfJaUsado = hospedeDao.existsByCpf(hospede.getCpf(), hospede.getId());
+		boolean isEmailJaUsado = hospedeDao.existsByEmail(hospede.getEmail(), hospede.getId());
 
-        if(isCpfJaUsado) erroHandler.addErros(new FieldErrorCode("cpf", "cpf.jaUsado"));
+        if(isEmailJaUsado) erroHandler.addErros(new FieldErrorCode("email", "email.jaUsado"));
     }
 }

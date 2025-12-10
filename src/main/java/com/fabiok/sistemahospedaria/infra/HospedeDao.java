@@ -4,4 +4,5 @@ import com.fabiok.sistemahospedaria.domain.hospede.Hospede;
 
 public interface HospedeDao extends Idao<Hospede> {
     Boolean existsByCpf(String cpf, Integer id);
+    Boolean existsByEmail(String email, Integer id);
 }

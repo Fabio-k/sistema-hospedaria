@@ -112,6 +112,29 @@ public class HospedeSqliteDao implements HospedeDao {
         }
     }
 
+    @Override
+    public Boolean existsByEmail(String email, Integer id) {
+        String sql;
+        boolean update = id != null;
+        if(!update){
+            sql = "SELECT 1 FROM hospede WHERE hos_email = ?;";
+        }else{
+            sql = "SELECT 1 FROM hospede WHERE hos_email = ? AND hos_id != ?;";
+        }
+
+        try(var conn = PostgresConnection.getConnection(); var pstm = conn.prepareStatement(sql)){
+            pstm.setString(1, email);
+            if(update) pstm.setInt(2, id);
+
+            try(var rs = pstm.executeQuery()) {
+                return rs.next();
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 	@Override
 	public PageResponse<Hospede> findAll(FiltroHospedeDto filtroHospedeDto) {
         StringBuilder whereString = new StringBuilder(
