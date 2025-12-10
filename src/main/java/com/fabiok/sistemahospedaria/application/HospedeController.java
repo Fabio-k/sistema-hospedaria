@@ -99,19 +99,6 @@ public class HospedeController implements HttpHandler {
 					exchange.sendResponseHeaders(204, -1);
 				}
 			}
-		} catch (ValidationException e){
-			var json = mapper.writeValueAsBytes(Map.of("erros", e.getErros()));
-			exchange.sendResponseHeaders(400, json.length);
-			exchange.getResponseBody().write(json);
-		} catch(DomainException e){
-			var json = mapper.writeValueAsBytes(Map.of("erro", e.getMessage()));
-			exchange.sendResponseHeaders(e.getStatus(), json.length);
-			exchange.getResponseBody().write(json);
-		} catch (Exception e) {
-			e.printStackTrace();
-			exchange.sendResponseHeaders(500, -1);
-		} finally {
-			exchange.getResponseBody().close();
 		}
 	}
 
