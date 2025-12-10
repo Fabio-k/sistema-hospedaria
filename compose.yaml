@@ -10,6 +10,8 @@ services:
       - ./src/resources/db/postgres:/docker-entrypoint-initdb.d/
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.7
+    depends_on:
+      - db
     command:
       - start-dev
     env_file:

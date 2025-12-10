@@ -1,3 +1,5 @@
+CREATE DATABASE keycloak;
+
 CREATE EXTENSION pg_trgm;
 CREATE EXTENSION unaccent;
 
